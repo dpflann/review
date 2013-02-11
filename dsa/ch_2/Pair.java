@@ -6,6 +6,15 @@ public class Pair<K, V> {
   K key;
   V value;
 
+  /* Unsafe - the size of the objects to be used as K, V are unknown
+   * at compile time, they are only determined at run time,
+   * This makes assumptions about object size, and can create problems
+   * It is deemd unsafe
+  public Pair(K k, V v) {
+    key = k;
+    value = v;
+  }*/
+
   public void set(K key, V value) {
     this.key = key;
     this.value = value;
@@ -31,6 +40,9 @@ public class Pair<K, V> {
     Pair<Student, Double> pair2 = new Pair<Student, Double>();
     pair2.set(new Student("A5976", "Sue", 19), new Double(9.5));
     System.out.println(pair2);
+
+    int[] x = new int[10];
+    //Pair<String, Integer>[] pairs = new Pair<String, Integer>[10]; //You can't do that on television, no parameterized type arrays
 
   }
 
