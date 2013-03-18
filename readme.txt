@@ -1,1 +1,1 @@
-Working through text 'Data Structures and Algorithms in Java' by M. Goodrich and R. Tamassia
+Reviewing fundamental concepts in computer science. Practice.
