@@ -15,6 +15,12 @@ public class BTree {
     size = 0;
     root = null;
   }
+
+  public BTree(BNode root)
+  {
+    size = 1;
+    this.root = root;
+  }
   // return number of nodes
   public int size()
   {
