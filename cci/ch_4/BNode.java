@@ -43,6 +43,18 @@ public class BNode implements Comparable {
     return hasRight() || hasLeft();
   }
   
+  public boolean isInOrder()
+  {
+    if (hasLeft() && hasRight())
+      return (getLeft().getData() <= data && getRight().getData() > data);
+    else if (hasLeft())
+      return (getLeft().getData() <= data);
+    else if (hasRight())
+      return (getRight().getData() > data);
+    else
+      return true;
+  }
+
   public Iterator<BNode> children()
   {
     ArrayList<BNode> children = new ArrayList<BNode>();
@@ -52,6 +64,17 @@ public class BNode implements Comparable {
       children.add(getRight());
     return children.iterator();
   }
+
+  public ArrayList<BNode> getChildren()
+  {
+    ArrayList<BNode> children = new ArrayList<BNode>();
+    if (hasLeft())
+      children.add(getLeft());
+    if (hasRight())
+      children.add(getRight());
+    return children;
+  }
+
   public void setLeft(BNode v)
   {
     leftChild = v;
