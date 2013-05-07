@@ -4,6 +4,7 @@
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.LinkedList;
 
 public class EdgeList extends Graph
 {
@@ -152,6 +153,33 @@ public class EdgeList extends Graph
 
   public void BFShelper(Vertex startVertex)
   {
+    LinkedList<Vertex> level = new LinkedList<Vertex>();
+    level.add(startVertex);
+    while (!level.isEmpty())
+    {
+      Vertex currentVertex = level.remove();
+      currentVertex.visit();
+
+      for (Edge edge : incidentEdges(currentVertex))
+      {
+        if (edge.isUnvisited())
+        {
+          edge.visit();
+          Vertex adjacentVertex = edge.getOpposite(currentVertex);
+
+          if (adjacentVertex.isUnvisited())
+          {
+            adjacentVertex.visit();
+            edge.setAsDiscoveryEdge();
+            level.add(adjacentVertex);
+          }
+          else
+          {
+            edge.setAsBackEdge();
+          }
+        }
+      }
+    }
   }
 
   public static void main(String[] args)
