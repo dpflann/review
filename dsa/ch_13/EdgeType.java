@@ -1,0 +1,2 @@
+public enum EdgeType { UNDETERMINED, DISCOVERY, BACK, CROSS }
+
