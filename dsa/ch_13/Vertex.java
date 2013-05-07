@@ -5,7 +5,6 @@
 public class Vertex
 {
   protected String data;
-  protected enum State { UNVISITED, VISITED }
   protected State state;
 
   public Vertex(String data)
@@ -49,6 +48,11 @@ public class Vertex
     this.state = State.UNVISITED;
   }
 
+  public boolean isUnvisited()
+  {
+    return state == State.UNVISITED;
+  }
+
   public String toString()
   {
     return "[" + data + "]";
@@ -66,6 +70,7 @@ public class Vertex
     System.out.println(vertex.state);
     vertex.visit();
     System.out.println(vertex.getState());
+    System.out.println("Unvisited? " + (vertex.isUnvisited() ? "Yes" : "No"));
   }
 
 } // end class
