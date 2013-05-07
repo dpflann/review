@@ -239,7 +239,29 @@ public class EdgeList extends Graph
     }
 
     edgeList.DFS(edgeList.vertices.get(0));
-    System.out.println("Performed DFS");
+    System.out.println("*************\nPerformed DFS\n*************");
+
+    for (Edge edge : edgeList.edges)
+    {
+      if (edge.isDiscovery())
+        System.out.println(edge);
+    }
+
+    System.out.println("Visited, hence reachable vertices");
+    for (Vertex vertex : edgeList.vertices)
+    {
+      if (!vertex.isUnvisited())
+        System.out.println(vertex);
+    }
+    System.out.println("Unvisited, hence unreachable vertices");
+    for (Vertex vertex : edgeList.vertices)
+    {
+      if (vertex.isUnvisited())
+        System.out.println(vertex);
+    }
+
+    edgeList.BFS(edgeList.vertices.get(0));
+    System.out.println("*************\nPerformed BFS\n*************");
 
     for (Edge edge : edgeList.edges)
     {
