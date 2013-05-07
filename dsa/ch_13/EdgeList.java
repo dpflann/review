@@ -89,7 +89,7 @@ public class EdgeList extends Graph
       vertices.add(newVertex);
     }
   }
-  
+
   public void replaceEdge(Edge edge, Edge newEdge)
   {
     if (edges.contains(edge))
@@ -106,7 +106,13 @@ public class EdgeList extends Graph
     for (Vertex vertex : vertices)
       vertex.unvisit();
   }
-  
+
+  public void unvisitAllEdges()
+  {
+    for (Edge edge : edges)
+      edge.unvisit();
+  }
+
   public void DFS(Vertex startVertex)
   {
     unvisitAllVertices();
