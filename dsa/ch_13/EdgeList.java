@@ -121,6 +121,27 @@ public class EdgeList extends Graph
 
   public void DFShelper(Vertex startVertex)
   {
+    startVertex.visit();
+
+    ArrayList<Vertex> adjacentVertices = new ArrayList<Vertex>();
+
+    for (Edge edge : incidentEdges(startVertex))
+    {
+      if (edge.isUnvisited())
+      {
+        edge.visit();
+        Vertex adjacentVertex = edge.getOpposite(startVertex);
+        if (adjacentVertex.isUnvisited())
+        {
+          edge.setAsDiscoveryEdge();
+          DFShelper(adjacentVertex);
+        }
+        else
+        {
+          edge.setAsBackEdge();
+        }
+      }
+    }
   }
 
   public void BFS(Vertex startVertex)
@@ -178,6 +199,28 @@ public class EdgeList extends Graph
     for (Edge edge : edgeList.edges)
     {
       System.out.println(edge);
+    }
+
+    edgeList.DFS(edgeList.vertices.get(0));
+    System.out.println("Performed DFS");
+
+    for (Edge edge : edgeList.edges)
+    {
+      if (edge.isDiscovery())
+        System.out.println(edge);
+    }
+
+    System.out.println("Visited, hence reachable vertices");
+    for (Vertex vertex : edgeList.vertices)
+    {
+      if (!vertex.isUnvisited())
+        System.out.println(vertex);
+    }
+    System.out.println("Unvisited, hence unreachable vertices");
+    for (Vertex vertex : edgeList.vertices)
+    {
+      if (vertex.isUnvisited())
+        System.out.println(vertex);
     }
   }
 } // end class
