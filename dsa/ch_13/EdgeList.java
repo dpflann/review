@@ -4,6 +4,7 @@
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.LinkedList;
 
 public class EdgeList extends Graph
 {
@@ -116,6 +117,7 @@ public class EdgeList extends Graph
   public void DFS(Vertex startVertex)
   {
     unvisitAllVertices();
+    unvisitAllEdges();
     DFShelper(startVertex);
   }
 
@@ -147,20 +149,51 @@ public class EdgeList extends Graph
   public void BFS(Vertex startVertex)
   {
     unvisitAllVertices();
+    unvisitAllEdges();
     BFShelper(startVertex);
   }
 
   public void BFShelper(Vertex startVertex)
   {
+    LinkedList<Vertex> level = new LinkedList<Vertex>();
+    level.add(startVertex);
+    while (!level.isEmpty())
+    {
+      Vertex currentVertex = level.remove();
+      currentVertex.visit();
+
+      for (Edge edge : incidentEdges(currentVertex))
+      {
+        if (edge.isUnvisited())
+        {
+          edge.visit();
+          Vertex adjacentVertex = edge.getOpposite(currentVertex);
+
+          if (adjacentVertex.isUnvisited())
+          {
+            adjacentVertex.visit();
+            edge.setAsDiscoveryEdge();
+            level.add(adjacentVertex);
+          }
+          else
+          {
+            edge.setAsBackEdge();
+          }
+        }
+      }
+    }
   }
 
-  public static void main(String[] args)
+  // similar to Erdos-Renyi graph construction
+  public static EdgeList makeSimpleGraph(int numberOfVertices, float probabilityOfConnection)
   {
-    //make vertices
+    System.out.println("**********\nCreating a graph with " + numberOfVertices + " vertices and probability of creating an edge between vertices " + probabilityOfConnection + "\n**********");
+
     ArrayList<Vertex> vertices = new ArrayList<Vertex>();
     ArrayList<Edge> edges = new ArrayList<Edge>();
 
-    for (int i = 0; i < 6; i++)
+    //make vertices
+    for (int i = 0; i < numberOfVertices; i++)
     {
       char c = (char) (i + 65);
       Vertex vertex = new Vertex(Character.toString(c));
@@ -169,14 +202,12 @@ public class EdgeList extends Graph
     }
 
     //make edges
-
-    float probabilityOfConnection = .3f;
     Random random = new Random();
 
     for (Vertex vertex : vertices)
     {
       System.out.println("Adding edges");
-      while (random.nextFloat() >= probabilityOfConnection)
+      while (random.nextFloat() <= probabilityOfConnection)
       {
         Vertex oppositeVertex = vertices.get(random.nextInt(vertices.size()));
 
@@ -194,15 +225,43 @@ public class EdgeList extends Graph
         }
       }
     }
+    return new EdgeList(vertices, edges);
+  }
 
-    EdgeList edgeList = new EdgeList(vertices, edges);
+  public static void main(String[] args)
+  {
+
+    EdgeList edgeList = makeSimpleGraph(6, .7f);
+
     for (Edge edge : edgeList.edges)
     {
       System.out.println(edge);
     }
 
     edgeList.DFS(edgeList.vertices.get(0));
-    System.out.println("Performed DFS");
+    System.out.println("*************\nPerformed DFS\n*************");
+
+    for (Edge edge : edgeList.edges)
+    {
+      if (edge.isDiscovery())
+        System.out.println(edge);
+    }
+
+    System.out.println("Visited, hence reachable vertices");
+    for (Vertex vertex : edgeList.vertices)
+    {
+      if (!vertex.isUnvisited())
+        System.out.println(vertex);
+    }
+    System.out.println("Unvisited, hence unreachable vertices");
+    for (Vertex vertex : edgeList.vertices)
+    {
+      if (vertex.isUnvisited())
+        System.out.println(vertex);
+    }
+
+    edgeList.BFS(edgeList.vertices.get(0));
+    System.out.println("*************\nPerformed BFS\n*************");
 
     for (Edge edge : edgeList.edges)
     {
