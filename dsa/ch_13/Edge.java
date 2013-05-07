@@ -89,9 +89,9 @@ public class Edge
     if (containsVertex(vertex))
     {
       if (isStartVertex(vertex))
-        return endPointOne;
-      else
         return endPointTwo;
+      else
+        return endPointOne;
     }
 
     return null;
