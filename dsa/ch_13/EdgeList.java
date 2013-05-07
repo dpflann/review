@@ -160,8 +160,6 @@ public class EdgeList extends Graph
     while (!level.isEmpty())
     {
       Vertex currentVertex = level.remove();
-      currentVertex.visit();
-
       for (Edge edge : incidentEdges(currentVertex))
       {
         if (edge.isUnvisited())
