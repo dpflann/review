@@ -117,6 +117,7 @@ public class EdgeList extends Graph
   public void DFS(Vertex startVertex)
   {
     unvisitAllVertices();
+    unvisitAllEdges();
     DFShelper(startVertex);
   }
 
@@ -148,6 +149,7 @@ public class EdgeList extends Graph
   public void BFS(Vertex startVertex)
   {
     unvisitAllVertices();
+    unvisitAllEdges();
     BFShelper(startVertex);
   }
 
