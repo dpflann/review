@@ -11,6 +11,8 @@ public class Edge
   protected Vertex endPointTwo;
   protected int weight;
   protected boolean isDirected; // sufficient for making a subclass?
+  protected State state;
+  protected EdgeType edgeType;
 
   // one --> two if directed
   public Edge(Vertex vertexOne, Vertex vertexTwo, int edgeWeight, boolean isDirected)
@@ -19,6 +21,8 @@ public class Edge
     endPointTwo = vertexTwo;
     weight = edgeWeight;
     this.isDirected = isDirected;
+    state = State.UNVISITED;
+    edgeType = EdgeType.UNDETERMINED;
   }
 
   public Edge(Vertex vertexOne, Vertex vertexTwo)
@@ -137,6 +141,41 @@ public class Edge
       else
         endPointTwo = replacementVertex;
     }
+  }
+
+  public boolean isUnvisited()
+  {
+    return state == State.UNVISITED;
+  }
+
+  public void setAsDiscoveryEdge()
+  {
+    edgeType = EdgeType.DISCOVERY;
+  }
+
+  public void setAsBackEdge()
+  {
+    edgeType = EdgeType.BACK;
+  }
+
+  public void setAsCrossEdge()
+  {
+    edgeType = EdgeType.CROSS;
+  }
+
+  public void visit()
+  {
+    state = State.VISITED;
+  }
+
+  public void unvisit()
+  {
+    state = State.UNVISITED;
+  }
+
+  public boolean isDiscovery()
+  {
+    return edgeType == EdgeType.DISCOVERY;
   }
 
   public String toString()
