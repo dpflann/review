@@ -3,10 +3,12 @@
 #include <ctype.h>
 #include "push_and_pop.c"
 #include <math.h>
+#include "variables.c"
 
 #define MAXOP 100 //max size of operand or operator
 #define NUMBER '0' //signal that a number was found
-
+#define PUSH_VAR -101
+#define RECENT_RESULT -102
 enum special_ops { POW = 1, SIN, EXP };
 
 int getch(void);
@@ -20,6 +22,10 @@ int getop(char s[])
   while ((s[0] = c = getch()) == ' ' || c == '\t')
     ;
   s[1] = '\0';
+  if (c >= 'a' && c <= 'z')
+    return process_potential_var(c);
+  if (c == 'R')
+    return RECENT_RESULT;
   if (!isdigit(c) && c != '.' && c != '-' && !(c == 'p' || c == 'e' || c == 's'))
     return c; //not a number
   i = 0;
@@ -58,6 +64,7 @@ int getop(char s[])
 
 char buf[BUFSIZE]; //buffer for ungetch
 int bufp = 0; //next free position in buf
+double most_recent_result;
 
 int getch(void)
 {
@@ -70,6 +77,27 @@ void ungetch(int c)
     printf("ungetch: too many characters\n");
   else
     buf[bufp++] = c;
+}
+
+int process_potential_var(int c)
+{
+  int c_1 = c;
+  c = getch();
+  if (c == ' ') 
+  {
+    if (check_var(c_1))
+    {
+      return PUSH_VAR;
+    }
+    else
+      return c;
+  }
+  if (c == '=')
+  {
+    printf("var: %c\n", c_1);
+    set_candidate_var(c_1);
+    return c;
+  }
 }
 
 int process_special_op(int c, char op_name[])
@@ -123,7 +151,18 @@ main()
     switch (type)
     {
       case NUMBER:
-        push(atof(s));
+        if (get_candidate_var())
+          set_var(atof(s));
+        else
+          push(atof(s));
+        break;
+      case PUSH_VAR:
+        push(get_var(s[0]));
+        break;
+      case RECENT_RESULT:
+        push(most_recent_result);
+      case '=':
+        printf("potential variable\n");
         break;
       case '+':
         push(pop() + pop());
@@ -159,9 +198,12 @@ main()
         push(exp(pop()));
         break;
       case '\n':
-        printf("\t%.8g\n", pop());
+        most_recent_result = pop();
+        printf("\t%.8g\n", most_recent_result);
         break;
       default:
+        if (var)
+          reset_var();
         printf("ERROR: uknown command %s\n", s);
         break;
     }// end switch (type)

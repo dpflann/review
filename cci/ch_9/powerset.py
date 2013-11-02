@@ -1,5 +1,5 @@
 def powerset(S, pSet):
-  if not S or S.__len__() == 0:
+  if not S or len(S) == 0:
     if set() not in pSet:
       pSet.append(set())
     return
@@ -15,7 +15,7 @@ s = [];
 
 powerset(S, s)
 
-print s.__len__(), " elements in poweset for", S
+print len(s), " elements in poweset for", S
 s.sort(key=len)
 for subset in s:
   print subset
