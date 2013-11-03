@@ -31,11 +31,15 @@ test_itoa()
 def atoi(a):
   n = 0
   negative = False
-  for l in a:
-    if (l == '-'):
-      negative = True
-      continue
-    n = n * 10 + int(l)
+  i = 0
+
+  if (a[0] == '-'):
+    negative = True
+    i = 1
+
+  while (i < len(a)):
+    n = n * 10 + int(a[i])
+    i += 1
 
   if (negative):
     n = n * -1
