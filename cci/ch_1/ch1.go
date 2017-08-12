@@ -126,8 +126,31 @@ func ReplaceSpaces(s *string) {
 	*s = newS
 }
 
+// The solution in the text assumes null terminated char array.
+// This can be faked, but Go does not work with strings that way.
+func ReplaceSpacesCCI(str *[]rune, length int) {
+	spaceCount, newLength, i := 0, 0, 0
+	for i < length {
+		if (*str)[i] == ' ' {
+			spaceCount++
+		}
+		i++
+	}
+	newLength = length + spaceCount*2
+	for i = length - 1; i >= 0; i-- {
+		if (*str)[i] == ' ' {
+			(*str)[newLength-1] = '0'
+			(*str)[newLength-2] = '2'
+			(*str)[newLength-3] = '%'
+			newLength = newLength - 3
+		} else {
+			(*str)[newLength-1] = (*str)[i]
+			newLength = newLength - 1
+		}
+	}
+}
+
 func main() {
-	// TODO: update to have shared variables
 	fmt.Println("====== 1.1 ======")
 	fmt.Println("HasUnique(...)")
 	fmt.Println(HasUnique("abc") == true)
@@ -166,11 +189,21 @@ func main() {
 
 	fmt.Println("====== 1.4 ======")
 	spaces1 := "a b"
+	spaces2 := "a  b "
 	expectedSpaces1 := "a%20b"
+	expectedSpaces2 := "a%20%20b%20"
 	noSpaces := "ab"
 	fmt.Println("ReplaceSpaces(...)")
 	ReplaceSpaces(&spaces1)
 	fmt.Println(spaces1 == expectedSpaces1)
 	ReplaceSpaces(&noSpaces)
 	fmt.Println(noSpaces == noSpaces)
+	ReplaceSpaces(&spaces2)
+	fmt.Println(spaces2 == expectedSpaces2)
+	fmt.Println("ReplaceSpacesCCI(...)")
+	runeSpaces1 := []rune{'a', ' ', 'b', ' ', ' '}
+	runeSpaces1Expected := []rune{'a', '%', '2', '0', 'b'}
+	lenRuneSpaces1 := 3
+	ReplaceSpacesCCI(&runeSpaces1, lenRuneSpaces1)
+	fmt.Println(string(runeSpaces1) == string(runeSpaces1Expected))
 }
