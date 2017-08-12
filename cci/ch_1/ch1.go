@@ -93,6 +93,39 @@ func IsPermutationCCI(s1, s2 string) bool {
 	return true
 }
 
+// ====== 1.4 ====== \\
+// Attempt to work with  []rune because of the idea of 'true' length
+func ReplaceSpaces(s *string) {
+	if s == nil {
+		return
+	}
+	spaces := 0
+	for _, c := range *s {
+		if c == ' ' {
+			spaces++
+		}
+	}
+	if spaces < 1 {
+		return
+	}
+	newStringBuff := make([]rune, len(*s)+spaces*2) // adding 2 more chars for each space
+	i := 0
+	for _, c := range *s {
+		if c == ' ' {
+			newStringBuff[i] = '%'
+			newStringBuff[i+1] = '2'
+			newStringBuff[i+2] = '0'
+			i += 3
+		} else {
+			newStringBuff[i] = c
+			i += 1
+		}
+	}
+
+	newS := string(newStringBuff)
+	*s = newS
+}
+
 func main() {
 	// TODO: update to have shared variables
 	fmt.Println("====== 1.1 ======")
@@ -130,4 +163,14 @@ func main() {
 	fmt.Println(IsPermutationCCI(s1, s2) == true)
 	fmt.Println(IsPermutationCCI(s1, s3) == false)
 	fmt.Println(IsPermutationCCI(s1, s4) == false)
+
+	fmt.Println("====== 1.4 ======")
+	spaces1 := "a b"
+	expectedSpaces1 := "a%20b"
+	noSpaces := "ab"
+	fmt.Println("ReplaceSpaces(...)")
+	ReplaceSpaces(&spaces1)
+	fmt.Println(spaces1 == expectedSpaces1)
+	ReplaceSpaces(&noSpaces)
+	fmt.Println(noSpaces == noSpaces)
 }
