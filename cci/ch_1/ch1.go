@@ -75,6 +75,24 @@ func IsPermutation(s1, s2 string) bool {
 	return true
 }
 
+func IsPermutationCCI(s1, s2 string) bool {
+	if len(s1) != len(s2) {
+		return false
+	}
+	// Assume ASCII
+	letters := make([]int, 256)
+	for _, c := range s1 {
+		letters[c]++
+	}
+	for _, c := range s2 {
+		letters[c] -= 1
+		if letters[c] < 0 {
+			return false
+		}
+	}
+	return true
+}
+
 func main() {
 	// TODO: update to have shared variables
 	fmt.Println("====== 1.1 ======")
@@ -107,4 +125,9 @@ func main() {
 	fmt.Println(IsPermutation(s1, s2) == true)
 	fmt.Println(IsPermutation(s1, s3) == false)
 	fmt.Println(IsPermutation(s1, s4) == false)
+	fmt.Println("IsPermutationCCI(..., ...)")
+	fmt.Println(IsPermutationCCI(s1, s1) == true)
+	fmt.Println(IsPermutationCCI(s1, s2) == true)
+	fmt.Println(IsPermutationCCI(s1, s3) == false)
+	fmt.Println(IsPermutationCCI(s1, s4) == false)
 }
