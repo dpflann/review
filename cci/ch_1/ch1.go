@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"strconv"
 )
 
 // ====== 1.1 ====== \\
@@ -150,6 +152,62 @@ func ReplaceSpacesCCI(str *[]rune, length int) {
 	}
 }
 
+// ====== 1.5 ====== \\
+func Compress(s string) string {
+	lenS := len(s)
+	if lenS == 0 {
+		return s
+	}
+	Srunes := []rune(s)
+	compressedS := ""
+	currentChar := Srunes[0]
+	count := 1
+	for i := 1; i < lenS; i++ {
+		if Srunes[i] == currentChar {
+			count += 1
+		} else {
+			compressedS += string(currentChar) + strconv.Itoa(count)
+			currentChar = Srunes[i]
+			count = 1
+		}
+	}
+	// final step because the for-loop looks ahead
+	compressedS += string(currentChar) + strconv.Itoa(count)
+	if len(compressedS) > lenS {
+		return s
+	}
+	return compressedS
+}
+
+func CompressCCI(s string) string {
+	lenS := len(s)
+	if lenS == 0 {
+		return s
+	}
+	var buffer bytes.Buffer
+	currentChar := s[0]
+	count := 1
+	for i := 1; i < lenS; i++ {
+		if s[i] == currentChar {
+			count += 1
+		} else {
+			buffer.WriteByte(currentChar)
+			buffer.WriteString(strconv.Itoa(count))
+			currentChar = s[i]
+			count = 1
+		}
+	}
+	// final step because the for-loop looks ahead
+	buffer.WriteByte(currentChar)
+	buffer.WriteString(strconv.Itoa(count))
+	compressedS := buffer.String()
+	if len(compressedS) > lenS {
+		return s
+	}
+	return compressedS
+
+}
+
 func main() {
 	fmt.Println("====== 1.1 ======")
 	fmt.Println("HasUnique(...)")
@@ -206,4 +264,22 @@ func main() {
 	lenRuneSpaces1 := 3
 	ReplaceSpacesCCI(&runeSpaces1, lenRuneSpaces1)
 	fmt.Println(string(runeSpaces1) == string(runeSpaces1Expected))
+
+	fmt.Println("====== 1.5 ======")
+	s1Uncompressed := "abc"
+	s1Compressed := "abc"
+	fmt.Println("Compress(...)")
+	fmt.Println(Compress(s1Uncompressed) == s1Compressed)
+	s2Uncompressed := "a"
+	s2Compressed := "a"
+	fmt.Println(Compress(s2Uncompressed) == s2Compressed)
+	s3Uncompressed := "aaabbbccc"
+	s3Compressed := "a3b3c3"
+	fmt.Println(Compress(s3Uncompressed) == s3Compressed)
+	fmt.Println(Compress("") == "")
+	fmt.Println("CompressCCI(...)")
+	fmt.Println(CompressCCI(s1Uncompressed) == s1Compressed)
+	fmt.Println(CompressCCI(s2Uncompressed) == s2Compressed)
+	fmt.Println(CompressCCI(s3Uncompressed) == s3Compressed)
+	fmt.Println(CompressCCI("") == "")
 }
