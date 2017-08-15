@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"strconv"
 )
@@ -178,6 +179,35 @@ func Compress(s string) string {
 	return compressedS
 }
 
+func CompressCCI(s string) string {
+	lenS := len(s)
+	if lenS == 0 {
+		return s
+	}
+	var buffer bytes.Buffer
+	currentChar := s[0]
+	count := 1
+	for i := 1; i < lenS; i++ {
+		if s[i] == currentChar {
+			count += 1
+		} else {
+			buffer.WriteByte(currentChar)
+			buffer.WriteString(strconv.Itoa(count))
+			currentChar = s[i]
+			count = 1
+		}
+	}
+	// final step because the for-loop looks ahead
+	buffer.WriteByte(currentChar)
+	buffer.WriteString(strconv.Itoa(count))
+	compressedS := buffer.String()
+	if len(compressedS) > lenS {
+		return s
+	}
+	return compressedS
+
+}
+
 func main() {
 	fmt.Println("====== 1.1 ======")
 	fmt.Println("HasUnique(...)")
@@ -247,4 +277,9 @@ func main() {
 	s3Compressed := "a3b3c3"
 	fmt.Println(Compress(s3Uncompressed) == s3Compressed)
 	fmt.Println(Compress("") == "")
+	fmt.Println("CompressCCI(...)")
+	fmt.Println(CompressCCI(s1Uncompressed) == s1Compressed)
+	fmt.Println(CompressCCI(s2Uncompressed) == s2Compressed)
+	fmt.Println(CompressCCI(s3Uncompressed) == s3Compressed)
+	fmt.Println(CompressCCI("") == "")
 }
