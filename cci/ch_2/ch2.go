@@ -1,0 +1,177 @@
+package main
+
+import (
+	"fmt"
+	"strconv"
+)
+
+type Node struct {
+	Next *Node
+	Data int
+}
+
+type LinkedList struct {
+	Head *Node
+}
+
+func (LL *LinkedList) AddNode(newNode *Node) {
+	if LL == nil {
+		// initialize
+		LL = &LinkedList{newNode}
+	} else if LL.Head == nil {
+		LL.Head = newNode
+	} else {
+		currentNode := LL.Head
+		for currentNode.Next != nil {
+			currentNode = currentNode.Next
+		}
+		currentNode.Next = newNode
+	}
+}
+
+func RemoveDuplicates1(LL *LinkedList) *LinkedList {
+	if LL == nil || LL.Head == nil {
+		return nil
+	}
+	uniqueData := make(map[int]bool)
+	currentNode := LL.Head
+	previousNode := LL.Head
+	for currentNode != nil {
+		_, seen := uniqueData[currentNode.Data]
+		if seen {
+			previousNode.Next = currentNode.Next
+			currentNode = previousNode.Next
+		} else {
+			uniqueData[currentNode.Data] = true
+			previousNode = currentNode
+			currentNode = currentNode.Next
+		}
+	}
+	return LL
+}
+
+func RemoveDuplicates2(LL *LinkedList) *LinkedList {
+	if LL == nil || LL.Head == nil {
+		return nil
+	}
+	currentNode := LL.Head
+	for currentNode != nil {
+		previousNode := currentNode
+		nextNode := currentNode.Next
+		for nextNode != nil {
+			if nextNode.Data == currentNode.Data {
+				previousNode.Next = nextNode.Next
+				previousNode = previousNode.Next
+				if previousNode != nil {
+					nextNode = nextNode.Next.Next
+				} else {
+					nextNode = nil
+				}
+			} else {
+				previousNode = nextNode
+				nextNode = nextNode.Next
+			}
+		}
+		currentNode = currentNode.Next
+	}
+	return LL
+}
+
+func (Llist1 *LinkedList) Equals(Llist2 *LinkedList) bool {
+	if Llist1 == nil && Llist2 == nil {
+		return true
+	}
+	if Llist1 == nil || Llist2 == nil {
+		return false
+	}
+	currentNode := Llist1.Head
+	currentNoNode := Llist2.Head
+	for currentNode != nil && currentNoNode != nil {
+		if currentNode.Data != currentNoNode.Data {
+			return false
+		}
+		currentNode = currentNode.Next
+		currentNoNode = currentNoNode.Next
+	}
+	return true
+}
+
+func (LL *LinkedList) String() string {
+	currentNode := LL.Head
+	strLL := ""
+	for currentNode != nil {
+		strLL += strconv.Itoa(currentNode.Data) + "->"
+		currentNode = currentNode.Next
+	}
+	return strLL
+}
+
+func main() {
+	fmt.Println("====== 2.1 ======")
+	list1, dupeList1, expectedList1 := &LinkedList{}, &LinkedList{}, &LinkedList{}
+	for i := 0; i < 10; i++ {
+		n1 := &Node{nil, i}
+		n2 := &Node{nil, i}
+		n3 := &Node{nil, i}
+		n4 := &Node{nil, i}
+		list1.AddNode(n1)
+		expectedList1.AddNode(n2)
+		dupeList1.AddNode(n3)
+		dupeList1.AddNode(n4)
+	}
+
+	fmt.Println("RemoveDuplicates1(...)")
+	fmt.Println(RemoveDuplicates1(list1).Equals(expectedList1) == true)
+	fmt.Println(RemoveDuplicates1(dupeList1).Equals(expectedList1) == true)
+
+	list1, dupeList1, expectedList1 = &LinkedList{}, &LinkedList{}, &LinkedList{}
+	for i := 0; i < 10; i++ {
+		n1 := &Node{nil, i}
+		n2 := &Node{nil, i}
+		n3 := &Node{nil, i}
+		n4 := &Node{nil, i}
+		list1.AddNode(n1)
+		expectedList1.AddNode(n2)
+		dupeList1.AddNode(n3)
+		dupeList1.AddNode(n4)
+	}
+	fmt.Println("RemoveDuplicates2(...)")
+	fmt.Println(RemoveDuplicates2(list1).Equals(expectedList1) == true)
+	fmt.Println(RemoveDuplicates2(dupeList1).Equals(expectedList1) == true)
+	fmt.Println("=================")
+
+	/*
+	fmt.Println("====== 2.3 ======")
+		list1, dupeList1, expectedList1 := &LinkedList{}, &LinkedList{}, &LinkedList{}
+		for i := 0; i < 10; i++ {
+			n1 := &Node{nil, i}
+			n2 := &Node{nil, i}
+			n3 := &Node{nil, i}
+			n4 := &Node{nil, i}
+			list1.AddNode(n1)
+			expectedList1.AddNode(n2)
+			dupeList1.AddNode(n3)
+			dupeList1.AddNode(n4)
+		}
+
+		fmt.Println("RemoveDuplicates1(...)")
+		fmt.Println(RemoveDuplicates1(list1).Equals(expectedList1) == true)
+		fmt.Println(RemoveDuplicates1(dupeList1).Equals(expectedList1) == true)
+
+		list1, dupeList1, expectedList1 = &LinkedList{}, &LinkedList{}, &LinkedList{}
+		for i := 0; i < 10; i++ {
+			n1 := &Node{nil, i}
+			n2 := &Node{nil, i}
+			n3 := &Node{nil, i}
+			n4 := &Node{nil, i}
+			list1.AddNode(n1)
+			expectedList1.AddNode(n2)
+			dupeList1.AddNode(n3)
+			dupeList1.AddNode(n4)
+		}
+		fmt.Println("RemoveDuplicates2(...)")
+		fmt.Println(RemoveDuplicates2(list1).Equals(expectedList1) == true)
+		fmt.Println(RemoveDuplicates2(dupeList1).Equals(expectedList1) == true)
+	*/
+	fmt.Println("=================")
+}
