@@ -153,6 +153,72 @@ func Partition(p int, LL *LinkedList) *LinkedList {
 	return lesserList
 }
 
+func AddNumbersAsLinkedLists(LL1, LL2 *LinkedList) *LinkedList {
+	sum := NumberFromLinkedList(LL1) + NumberFromLinkedList(LL2)
+	return LinkedListFromNumber(sum)
+}
+
+// 7->1->6 = 617, digits are stored in reverse order
+func NumberFromLinkedList(LL *LinkedList) int {
+	if LL.Head == nil {
+		return -1
+	}
+	total, power := LL.Head.Data, 10
+	currentNode := LL.Head.Next
+	for currentNode != nil {
+		total += currentNode.Data * power
+		power = power * 10
+		currentNode = currentNode.Next
+	}
+	return total
+}
+
+func LinkedListFromNumber(n int) *LinkedList {
+	LL := &LinkedList{}
+	for n > 0 {
+		digit := n % 10
+		n = n / 10
+		LL.AddNode(&Node{nil, digit})
+	}
+	return LL
+}
+
+func AddNumbersAsLinkedListsReversed(LL1, LL2 *LinkedList) *LinkedList {
+	sum := NumberFromLinkedListReversed(LL1) + NumberFromLinkedListReversed(LL2)
+	return LinkedListFromNumberReversed(sum)
+}
+
+// 7->1->6 = 617, digits are stored in reverse order
+func NumberFromLinkedListReversed(LL *LinkedList) int {
+	if LL.Head == nil {
+		return -1
+	}
+	total := 0
+	currentNode := LL.Head
+	for currentNode != nil {
+		total = total*10 + currentNode.Data
+		currentNode = currentNode.Next
+	}
+	return total
+}
+
+func LinkedListFromNumberReversed(n int) *LinkedList {
+	LL := &LinkedList{}
+	var currentNode, previousNode *Node
+	for n > 0 {
+		digit := n % 10
+		n = n / 10
+		currentNode = &Node{nil, digit}
+		if previousNode == nil {
+			previousNode = currentNode
+		} else {
+			currentNode.Next = previousNode
+			previousNode = currentNode
+		}
+	}
+	return LL
+}
+
 func main() {
 	fmt.Println("====== 2.1 ======")
 	list1, dupeList1, expectedList1 := &LinkedList{}, &LinkedList{}, &LinkedList{}
@@ -238,5 +304,49 @@ func main() {
 	fmt.Println("Partition(...)")
 	partitionedList := Partition(10, list3)
 	fmt.Println(partitionedList.Equals(expectedList3) == true)
+	fmt.Println("=================")
+
+	n, m, expectedSum, expectedSumReversed := &LinkedList{}, &LinkedList{}, &LinkedList{}, &LinkedList{}
+
+	// 7->1->6 = 617
+	n.AddNode(&Node{nil, 7})
+	n.AddNode(&Node{nil, 1})
+	n.AddNode(&Node{nil, 6})
+
+	// 5->4->3 = 345
+	m.AddNode(&Node{nil, 5})
+	m.AddNode(&Node{nil, 4})
+	m.AddNode(&Node{nil, 3})
+
+	// 617 + 345 =  962 == 2->6->9
+	expectedSum.AddNode(&Node{nil, 2})
+	expectedSum.AddNode(&Node{nil, 6})
+	expectedSum.AddNode(&Node{nil, 9})
+
+	fmt.Println("====== 2.5 ======")
+	fmt.Println("AddNumbersAsLinkedLists(..., ...)")
+	fmt.Println(NumberFromLinkedList(n) == 617)
+	fmt.Println(NumberFromLinkedList(m) == 345)
+	fmt.Println(NumberFromLinkedList(expectedSum) == 962)
+	fmt.Println(LinkedListFromNumber(617).Equals(n))
+	fmt.Println(LinkedListFromNumber(345).Equals(m))
+	fmt.Println(LinkedListFromNumber(962).Equals(expectedSum))
+	fmt.Println(AddNumbersAsLinkedLists(n, m).Equals(expectedSum))
+
+	// "reversed order"
+	expectedSumReversed.AddNode(&Node{nil, 1})
+	expectedSumReversed.AddNode(&Node{nil, 2})
+	expectedSumReversed.AddNode(&Node{nil, 5})
+	expectedSumReversed.AddNode(&Node{nil, 9})
+
+	fmt.Println(NumberFromLinkedListReversed(n) == 716)
+	fmt.Println(NumberFromLinkedListReversed(m) == 543)
+
+	fmt.Println(NumberFromLinkedListReversed(expectedSumReversed) == 1259)
+	fmt.Println(LinkedListFromNumberReversed(716).Equals(n))
+	fmt.Println(LinkedListFromNumberReversed(543).Equals(m))
+	fmt.Println(LinkedListFromNumberReversed(1259).Equals(expectedSumReversed))
+	fmt.Println(AddNumbersAsLinkedListsReversed(n, m).Equals(expectedSumReversed))
+
 	fmt.Println("=================")
 }
