@@ -106,6 +106,21 @@ func RemoveDuplicates2(LL *LinkedList) *LinkedList {
 	return LL
 }
 
+func FindKthToLast(LL *LinkedList, k int) *Node {
+	length := 0
+	for currentNode := LL.Head; currentNode != nil; currentNode = currentNode.Next {
+		length += 1
+	}
+	index := length - k - 1
+	i := 0
+	currentNode := LL.Head
+	for i < index {
+		currentNode = currentNode.Next
+		i += 1
+	}
+	return currentNode
+}
+
 func DeleteNode(n *Node) {
 	if n == nil {
 		return
@@ -170,6 +185,14 @@ func main() {
 	fmt.Println("RemoveDuplicates2(...)")
 	fmt.Println(RemoveDuplicates2(list1).Equals(expectedList1) == true)
 	fmt.Println(RemoveDuplicates2(dupeList1).Equals(expectedList1) == true)
+	fmt.Println("=================")
+
+	fmt.Println("====== 2.2 ======")
+	fmt.Println("FindKthToLast(..., ...)")
+	fmt.Println(list1)
+	fmt.Println(FindKthToLast(list1, 0).Data == 9)
+	fmt.Println(FindKthToLast(list1, 9).Data == 0)
+	fmt.Println(FindKthToLast(list1, 8).Data == 1)
 	fmt.Println("=================")
 
 	fmt.Println("====== 2.3 ======")
