@@ -219,6 +219,21 @@ func LinkedListFromNumberReversed(n int) *LinkedList {
 	return LL
 }
 
+func FindCycleStart(LL *LinkedList) *Node {
+	// A -> -B -> C -> D -> E -> C
+	seenNodes := map[*Node]bool{}
+	currentNode := LL.Head
+	for currentNode != nil {
+		if _, ok := seenNodes[currentNode]; ok {
+			return currentNode
+		} else {
+			seenNodes[currentNode] = true
+		}
+		currentNode = currentNode.Next
+	}
+	return nil
+}
+
 func main() {
 	fmt.Println("====== 2.1 ======")
 	list1, dupeList1, expectedList1 := &LinkedList{}, &LinkedList{}, &LinkedList{}
@@ -347,6 +362,28 @@ func main() {
 	fmt.Println(LinkedListFromNumberReversed(543).Equals(m))
 	fmt.Println(LinkedListFromNumberReversed(1259).Equals(expectedSumReversed))
 	fmt.Println(AddNumbersAsLinkedListsReversed(n, m).Equals(expectedSumReversed))
+	fmt.Println("=================")
 
+	fmt.Println("====== 2.6 ======")
+	fmt.Println("FindCycleStart(...)")
+	cycle, noCycle := &LinkedList{}, &LinkedList{}
+	repeatedNode := &Node{nil, 7}
+
+	cycle.AddNode(&Node{nil, 10})
+	cycle.AddNode(&Node{nil, 1})
+	cycle.AddNode(repeatedNode)
+	cycle.AddNode(&Node{nil, 6})
+	cycle.AddNode(&Node{nil, 4})
+	cycle.AddNode(repeatedNode)
+
+	noCycle.AddNode(&Node{nil, 10})
+	noCycle.AddNode(&Node{nil, 1})
+	noCycle.AddNode(&Node{nil, 6})
+	noCycle.AddNode(&Node{nil, 4})
+
+	fmt.Println(FindCycleStart(cycle) != nil)
+	fmt.Println(FindCycleStart(cycle).Data == repeatedNode.Data)
+	fmt.Println(FindCycleStart(cycle) == repeatedNode)
+	fmt.Println(FindCycleStart(noCycle) == nil)
 	fmt.Println("=================")
 }
