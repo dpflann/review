@@ -234,6 +234,36 @@ func FindCycleStart(LL *LinkedList) *Node {
 	return nil
 }
 
+func FindCycleStartV2(LL *LinkedList) *Node {
+	// A -> -B -> C -> D -> E -> C
+	seenNodes := map[*Node]bool{}
+	currentNode := LL.Head
+	for currentNode != nil {
+		if _, ok := seenNodes[currentNode]; ok {
+			return currentNode
+		} else {
+			seenNodes[currentNode] = true
+		}
+		currentNode = currentNode.Next
+	}
+	return nil
+}
+
+func (LL *LinkedList) IsPalindrome() bool {
+	nodes := []int{}
+	currentNode := LL.Head
+	for currentNode != nil {
+		nodes = append(nodes, currentNode.Data)
+		currentNode = currentNode.Next
+	}
+	for i, j := 0, len(nodes)-1; i < j; i, j = i+1, j-1 {
+		if nodes[i] != nodes[j] {
+			return false
+		}
+	}
+	return true
+}
+
 func main() {
 	fmt.Println("====== 2.1 ======")
 	list1, dupeList1, expectedList1 := &LinkedList{}, &LinkedList{}, &LinkedList{}
@@ -385,5 +415,26 @@ func main() {
 	fmt.Println(FindCycleStart(cycle).Data == repeatedNode.Data)
 	fmt.Println(FindCycleStart(cycle) == repeatedNode)
 	fmt.Println(FindCycleStart(noCycle) == nil)
+	fmt.Println("=================")
+
+	fmt.Println("====== 2.7 ======")
+	fmt.Println("IsPalindrome()")
+	palindrome, noPalindrome := &LinkedList{}, &LinkedList{}
+
+	palindrome.AddNode(&Node{nil, 10})
+	palindrome.AddNode(&Node{nil, 1})
+	palindrome.AddNode(&Node{nil, 6})
+	palindrome.AddNode(&Node{nil, 4})
+	palindrome.AddNode(&Node{nil, 6})
+	palindrome.AddNode(&Node{nil, 1})
+	palindrome.AddNode(&Node{nil, 10})
+
+	noPalindrome.AddNode(&Node{nil, 10})
+	noPalindrome.AddNode(&Node{nil, 6})
+	noPalindrome.AddNode(&Node{nil, 4})
+	noPalindrome.AddNode(&Node{nil, 6})
+
+	fmt.Println(palindrome.IsPalindrome() == true)
+	fmt.Println(noPalindrome.IsPalindrome() == true)
 	fmt.Println("=================")
 }
