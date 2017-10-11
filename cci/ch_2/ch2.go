@@ -66,15 +66,13 @@ func RemoveDuplicates1(LL *LinkedList) *LinkedList {
 	currentNode := LL.Head
 	previousNode := LL.Head
 	for currentNode != nil {
-		_, seen := uniqueData[currentNode.Data]
-		if seen {
+		if _, seen := uniqueData[currentNode.Data]; seen {
 			previousNode.Next = currentNode.Next
-			currentNode = previousNode.Next
 		} else {
 			uniqueData[currentNode.Data] = true
 			previousNode = currentNode
-			currentNode = currentNode.Next
 		}
+		currentNode = currentNode.Next
 	}
 	return LL
 }
@@ -104,6 +102,21 @@ func RemoveDuplicates2(LL *LinkedList) *LinkedList {
 		currentNode = currentNode.Next
 	}
 	return LL
+}
+
+func FindKthToLast(LL *LinkedList, k int) *Node {
+	length := 0
+	for currentNode := LL.Head; currentNode != nil; currentNode = currentNode.Next {
+		length += 1
+	}
+	index := length - k - 1
+	i := 0
+	currentNode := LL.Head
+	for i < index {
+		currentNode = currentNode.Next
+		i += 1
+	}
+	return currentNode
 }
 
 func DeleteNode(n *Node) {
@@ -138,6 +151,117 @@ func Partition(p int, LL *LinkedList) *LinkedList {
 	return lesserList
 }
 
+func AddNumbersAsLinkedLists(LL1, LL2 *LinkedList) *LinkedList {
+	sum := NumberFromLinkedList(LL1) + NumberFromLinkedList(LL2)
+	return LinkedListFromNumber(sum)
+}
+
+// 7->1->6 = 617, digits are stored in reverse order
+func NumberFromLinkedList(LL *LinkedList) int {
+	if LL.Head == nil {
+		return -1
+	}
+	total, power := LL.Head.Data, 10
+	currentNode := LL.Head.Next
+	for currentNode != nil {
+		total += currentNode.Data * power
+		power = power * 10
+		currentNode = currentNode.Next
+	}
+	return total
+}
+
+func LinkedListFromNumber(n int) *LinkedList {
+	LL := &LinkedList{}
+	for n > 0 {
+		digit := n % 10
+		n = n / 10
+		LL.AddNode(&Node{nil, digit})
+	}
+	return LL
+}
+
+func AddNumbersAsLinkedListsReversed(LL1, LL2 *LinkedList) *LinkedList {
+	sum := NumberFromLinkedListReversed(LL1) + NumberFromLinkedListReversed(LL2)
+	return LinkedListFromNumberReversed(sum)
+}
+
+// 7->1->6 = 617, digits are stored in reverse order
+func NumberFromLinkedListReversed(LL *LinkedList) int {
+	if LL.Head == nil {
+		return -1
+	}
+	total := 0
+	currentNode := LL.Head
+	for currentNode != nil {
+		total = total*10 + currentNode.Data
+		currentNode = currentNode.Next
+	}
+	return total
+}
+
+func LinkedListFromNumberReversed(n int) *LinkedList {
+	LL := &LinkedList{}
+	var currentNode, previousNode *Node
+	for n > 0 {
+		digit := n % 10
+		n = n / 10
+		currentNode = &Node{nil, digit}
+		if previousNode == nil {
+			previousNode = currentNode
+		} else {
+			currentNode.Next = previousNode
+			previousNode = currentNode
+		}
+	}
+	return LL
+}
+
+func FindCycleStart(LL *LinkedList) *Node {
+	// A -> -B -> C -> D -> E -> C
+	seenNodes := map[*Node]bool{}
+	currentNode := LL.Head
+	for currentNode != nil {
+		if _, ok := seenNodes[currentNode]; ok {
+			return currentNode
+		} else {
+			seenNodes[currentNode] = true
+		}
+		currentNode = currentNode.Next
+	}
+	return nil
+}
+
+func FindCycleStartV2(LL *LinkedList) *Node {
+	// A -> -B -> C -> D -> E -> C
+	seenNodes := map[*Node]bool{}
+	currentNode := LL.Head
+	for currentNode != nil {
+		if _, ok := seenNodes[currentNode]; ok {
+			return currentNode
+		} else {
+			seenNodes[currentNode] = true
+		}
+		currentNode = currentNode.Next
+	}
+	return nil
+}
+
+func (LL *LinkedList) IsPalindrome() bool {
+	nodes := []int{}
+	currentNode := LL.Head
+	for currentNode != nil {
+		nodes = append(nodes, currentNode.Data)
+		currentNode = currentNode.Next
+	}
+	for i, j := 0, len(nodes)-1; i < j; i, j = i+1, j-1 {
+		if nodes[i] != nodes[j] {
+			return false
+		}
+	}
+	return true
+}
+
 func main() {
 	fmt.Println("====== 2.1 ======")
 	list1, dupeList1, expectedList1 := &LinkedList{}, &LinkedList{}, &LinkedList{}
@@ -170,6 +294,14 @@ func main() {
 	fmt.Println("RemoveDuplicates2(...)")
 	fmt.Println(RemoveDuplicates2(list1).Equals(expectedList1) == true)
 	fmt.Println(RemoveDuplicates2(dupeList1).Equals(expectedList1) == true)
+	fmt.Println("=================")
+
+	fmt.Println("====== 2.2 ======")
+	fmt.Println("FindKthToLast(..., ...)")
+	fmt.Println(list1)
+	fmt.Println(FindKthToLast(list1, 0).Data == 9)
+	fmt.Println(FindKthToLast(list1, 9).Data == 0)
+	fmt.Println(FindKthToLast(list1, 8).Data == 1)
 	fmt.Println("=================")
 
 	fmt.Println("====== 2.3 ======")
@@ -215,5 +347,92 @@ func main() {
 	fmt.Println("Partition(...)")
 	partitionedList := Partition(10, list3)
 	fmt.Println(partitionedList.Equals(expectedList3) == true)
+	fmt.Println("=================")
+
+	n, m, expectedSum, expectedSumReversed := &LinkedList{}, &LinkedList{}, &LinkedList{}, &LinkedList{}
+
+	// 7->1->6 = 617
+	n.AddNode(&Node{nil, 7})
+	n.AddNode(&Node{nil, 1})
+	n.AddNode(&Node{nil, 6})
+
+	// 5->4->3 = 345
+	m.AddNode(&Node{nil, 5})
+	m.AddNode(&Node{nil, 4})
+	m.AddNode(&Node{nil, 3})
+
+	// 617 + 345 =  962 == 2->6->9
+	expectedSum.AddNode(&Node{nil, 2})
+	expectedSum.AddNode(&Node{nil, 6})
+	expectedSum.AddNode(&Node{nil, 9})
+
+	fmt.Println("====== 2.5 ======")
+	fmt.Println("AddNumbersAsLinkedLists(..., ...)")
+	fmt.Println(NumberFromLinkedList(n) == 617)
+	fmt.Println(NumberFromLinkedList(m) == 345)
+	fmt.Println(NumberFromLinkedList(expectedSum) == 962)
+	fmt.Println(LinkedListFromNumber(617).Equals(n))
+	fmt.Println(LinkedListFromNumber(345).Equals(m))
+	fmt.Println(LinkedListFromNumber(962).Equals(expectedSum))
+	fmt.Println(AddNumbersAsLinkedLists(n, m).Equals(expectedSum))
+
+	// "reversed order"
+	expectedSumReversed.AddNode(&Node{nil, 1})
+	expectedSumReversed.AddNode(&Node{nil, 2})
+	expectedSumReversed.AddNode(&Node{nil, 5})
+	expectedSumReversed.AddNode(&Node{nil, 9})
+
+	fmt.Println(NumberFromLinkedListReversed(n) == 716)
+	fmt.Println(NumberFromLinkedListReversed(m) == 543)
+
+	fmt.Println(NumberFromLinkedListReversed(expectedSumReversed) == 1259)
+	fmt.Println(LinkedListFromNumberReversed(716).Equals(n))
+	fmt.Println(LinkedListFromNumberReversed(543).Equals(m))
+	fmt.Println(LinkedListFromNumberReversed(1259).Equals(expectedSumReversed))
+	fmt.Println(AddNumbersAsLinkedListsReversed(n, m).Equals(expectedSumReversed))
+	fmt.Println("=================")
+
+	fmt.Println("====== 2.6 ======")
+	fmt.Println("FindCycleStart(...)")
+	cycle, noCycle := &LinkedList{}, &LinkedList{}
+	repeatedNode := &Node{nil, 7}
+
+	cycle.AddNode(&Node{nil, 10})
+	cycle.AddNode(&Node{nil, 1})
+	cycle.AddNode(repeatedNode)
+	cycle.AddNode(&Node{nil, 6})
+	cycle.AddNode(&Node{nil, 4})
+	cycle.AddNode(repeatedNode)
+
+	noCycle.AddNode(&Node{nil, 10})
+	noCycle.AddNode(&Node{nil, 1})
+	noCycle.AddNode(&Node{nil, 6})
+	noCycle.AddNode(&Node{nil, 4})
+
+	fmt.Println(FindCycleStart(cycle) != nil)
+	fmt.Println(FindCycleStart(cycle).Data == repeatedNode.Data)
+	fmt.Println(FindCycleStart(cycle) == repeatedNode)
+	fmt.Println(FindCycleStart(noCycle) == nil)
+	fmt.Println("=================")
+
+	fmt.Println("====== 2.7 ======")
+	fmt.Println("IsPalindrome()")
+	palindrome, noPalindrome := &LinkedList{}, &LinkedList{}
+
+	palindrome.AddNode(&Node{nil, 10})
+	palindrome.AddNode(&Node{nil, 1})
+	palindrome.AddNode(&Node{nil, 6})
+	palindrome.AddNode(&Node{nil, 4})
+	palindrome.AddNode(&Node{nil, 6})
+	palindrome.AddNode(&Node{nil, 1})
+	palindrome.AddNode(&Node{nil, 10})
+
+	noPalindrome.AddNode(&Node{nil, 10})
+	noPalindrome.AddNode(&Node{nil, 6})
+	noPalindrome.AddNode(&Node{nil, 4})
+	noPalindrome.AddNode(&Node{nil, 6})
+
+	fmt.Println(palindrome.IsPalindrome() == true)
+	fmt.Println(noPalindrome.IsPalindrome() == false)
 	fmt.Println("=================")
 }
