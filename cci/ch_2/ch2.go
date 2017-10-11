@@ -66,15 +66,13 @@ func RemoveDuplicates1(LL *LinkedList) *LinkedList {
 	currentNode := LL.Head
 	previousNode := LL.Head
 	for currentNode != nil {
-		_, seen := uniqueData[currentNode.Data]
-		if seen {
+		if _, seen := uniqueData[currentNode.Data]; seen {
 			previousNode.Next = currentNode.Next
-			currentNode = previousNode.Next
 		} else {
 			uniqueData[currentNode.Data] = true
 			previousNode = currentNode
-			currentNode = currentNode.Next
 		}
+		currentNode = currentNode.Next
 	}
 	return LL
 }
