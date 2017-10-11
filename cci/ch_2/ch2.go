@@ -435,6 +435,6 @@ func main() {
 	noPalindrome.AddNode(&Node{nil, 6})
 
 	fmt.Println(palindrome.IsPalindrome() == true)
-	fmt.Println(noPalindrome.IsPalindrome() == true)
+	fmt.Println(noPalindrome.IsPalindrome() == false)
 	fmt.Println("=================")
 }
