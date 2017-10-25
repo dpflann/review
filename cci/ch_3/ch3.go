@@ -109,6 +109,57 @@ func (t *ThreeStackArray) Print() {
 	fmt.Println(b.String())
 }
 
+// ===== 3.2 =====
+// create a stack with mim functionality
+type MinStack struct {
+	head *minStackNode
+	tail *minStackNode // will be the top of the stack
+}
+
+type minStackNode struct {
+	data     int
+	min      int
+	previous *minStackNode
+	next     *minStackNode
+}
+
+func (ms *MinStack) Push(data int) {
+	msn := &minStackNode{data: data}
+	if ms.head == nil && ms.tail == nil {
+		msn.min = data
+		ms.head = msn
+		ms.tail = msn
+	} else {
+		if data < ms.tail.min {
+			msn.min = data
+		} else {
+			msn.min = ms.tail.min
+		}
+		msn.previous = ms.tail
+		ms.tail.next = msn
+		ms.tail = msn
+	}
+}
+
+func (ms *MinStack) Pop() (int, error) {
+	if ms.head == nil && ms.tail == nil {
+		return -1, fmt.Errorf("stack is empty")
+	}
+	data := ms.tail.data
+	if ms.tail == ms.head {
+		ms.head = nil
+	}
+	ms.tail = ms.tail.previous
+	return data, nil
+}
+
+func (ms *MinStack) Min() (int, error) {
+	if ms.head == nil && ms.tail == nil {
+		return -1, fmt.Errorf("stack is empty")
+	}
+	return ms.tail.min, nil
+}
+
 func main() {
 	fmt.Println(problemTitle("3.1"))
 	ts := NewThreeStackArray(10)
@@ -144,5 +195,28 @@ func main() {
 	fmt.Println(problemEndline(problemTitle("3.1")))
 
 	fmt.Println(problemTitle("3.2"))
+	ms := MinStack{}
+	ms.Push(5)
+	min, _ := ms.Min()
+	fmt.Println(min == 5)
+	ms.Push(10)
+	min, _ = ms.Min()
+	fmt.Println(min == 5)
+	ms.Push(1)
+	min, _ = ms.Min()
+	fmt.Println(min == 1)
+	min, _ = ms.Min()
+	ms.Pop()
+	min, _ = ms.Min()
+	ms.Pop()
+	min, _ = ms.Min()
+	fmt.Println(min == 5)
+	ms.Pop()
+	_, err = ms.Pop()
+	if err != nil {
+		fmt.Println(err.String() == "stack is empty")
+	}
+	min, _ = ms.Min()
+	fmt.Println(min == -1)
 	fmt.Println(problemEndline(problemTitle("3.2")))
 }
