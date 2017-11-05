@@ -160,6 +160,187 @@ func (ms *MinStack) Min() (int, error) {
 	return ms.tail.min, nil
 }
 
+// ===== 3.3 =====
+// SetOfStacks - will be comprised of multiple stacks
+// Basic Stack
+
+type Stack struct {
+	capacity   int
+	size       int
+	topOfStack *Node
+}
+
+type Node struct {
+	next     *Node
+	previous *Node
+	data     interface{}
+}
+
+func (s *Stack) Pop() interface{} {
+	if s.size == 0 {
+		return fmt.Errorf("stack is empty")
+	}
+	data := s.topOfStack.data
+	s.topOfStack = s.topOfStack.previous
+	s.size -= 1
+	return data
+}
+
+func (s *Stack) Push(data interface{}) error {
+	if s.size == s.capacity {
+		return fmt.Errorf("stack is full")
+	}
+	newNode := &Node{nil, nil, data}
+	if s.topOfStack == nil {
+		s.topOfStack = newNode
+	} else {
+		newNode.previous = s.topOfStack
+		s.topOfStack = newNode
+	}
+	s.size += 1
+	return nil
+}
+
+func (s *Stack) Size() int {
+	return s.size
+}
+
+func (s *Stack) IsFull() bool {
+	return s.size == s.capacity
+}
+func (s *Stack) IsEmpty() bool {
+	return s.size == 0
+}
+
+func (s *Stack) String() string {
+	base := ""
+	if s.topOfStack == nil {
+		return base
+	}
+	base = "top=" + fmt.Sprintf("%#v", s.topOfStack.data)
+	node := s.topOfStack.previous
+	for node != nil {
+		base += "->" + fmt.Sprintf("%#v", node.data)
+		node = node.previous
+	}
+	return base
+}
+
+type SetOfStacks struct {
+	subStackCapacity int
+	stacks           []Stack
+	head             int
+}
+
+func (ss *SetOfStacks) Size() int {
+	return len(ss.stacks)
+}
+
+func (ss *SetOfStacks) Push(data interface{}) error {
+	if len(ss.stacks) == 0 {
+		ss.head = 0
+		ss.stacks = append(ss.stacks, Stack{ss.subStackCapacity, 0, nil})
+	}
+	if ss.stacks[ss.head].IsFull() {
+		ss.head += 1
+		ss.stacks = append(ss.stacks, Stack{ss.subStackCapacity, 0, nil})
+	}
+	return ss.stacks[ss.head].Push(data)
+}
+
+func (ss *SetOfStacks) Pop() interface{} {
+	if len(ss.stacks) == 0 {
+		return fmt.Errorf("Stack is empty")
+	}
+	for ss.stacks[ss.head].IsEmpty() && ss.head > 0 {
+		ss.head -= 1
+	}
+	data := ss.stacks[ss.head].Pop()
+	if ss.stacks[ss.head].IsEmpty() {
+		ss.stacks = ss.stacks[:ss.head]
+		ss.head -= 1
+	}
+	return data
+}
+
+func (ss *SetOfStacks) PopAt(i int) interface{} {
+	if len(ss.stacks) == 0 {
+		return fmt.Errorf("Stack is empty")
+	}
+	if i < 0 || i > len(ss.stacks) {
+		return fmt.Errorf("index is out of range")
+	}
+	if i == ss.head {
+		// Normal stack management
+		return ss.Pop()
+	} else {
+		// May need to delete emptied stack
+		data := ss.stacks[i].Pop()
+		if ss.stacks[i].IsEmpty() {
+			ss.stacks = append(ss.stacks[:i], ss.stacks[i+1:]...)
+			// Shift the head, we have removed a stack.
+			ss.head -= 1
+		}
+		return data
+	}
+}
+
+// ===== 3.4 =====
+// Towers of Hanoi
+// 3 towers, N disks start in sorted order
+// Rules:
+// 1. only one disk can be moved at a time
+// 2. a disk is slid off the top of one tower onto the next tower
+// 3. a disk can only be placed on top of a larger disk
+// Need to represent the game using stacks.
+// Each tower is a stack with a position
+// Start state: stack @ 0 has all disks
+// End state: statck @ 2 (3rd tower) has all disks
+
+// ===== 3.5 =====
+// Implement a queue using two stacks
+// LIFO to support FIFO
+type Queue struct {
+	enqueueStack Stack
+	dequeueStack Stack
+	capacity     int
+}
+
+func NewQueue(cap int) *Queue {
+	eStack := Stack{cap, 0, nil}
+	dStack := Stack{cap, 0, nil}
+	return &Queue{eStack, dStack, cap}
+}
+
+func (q *Queue) Enqueue(data interface{}) error {
+	if q.IsFull() {
+		return fmt.Errorf("Queue is full")
+	}
+	err := q.enqueueStack.Push(data)
+	if err != nil {
+		return fmt.Errorf("Unable to enqueue data")
+	}
+	return nil
+}
+
+func (q *Queue) Dequeue() interface{} {
+	if q.dequeueStack.IsEmpty() && q.enqueueStack.IsEmpty() {
+		return nil
+	}
+	if q.dequeueStack.IsEmpty() && !q.enqueueStack.IsEmpty() {
+		// move all enqueued items to the dequeueStack
+		for !q.enqueueStack.IsEmpty() {
+			q.dequeueStack.Push(q.enqueueStack.Pop())
+		}
+	}
+	return q.dequeueStack.Pop()
+}
+
+func (q *Queue) IsFull() bool {
+	return q.enqueueStack.IsFull() && q.dequeueStack.IsFull()
+}
+
+///\\\///\\\///[[ Begin Testing ]]\\\///\\\//\\\
 func main() {
 	fmt.Println(problemTitle("3.1"))
 	ts := NewThreeStackArray(10)
@@ -214,9 +395,80 @@ func main() {
 	ms.Pop()
 	_, err = ms.Pop()
 	if err != nil {
-		fmt.Println(err.String() == "stack is empty")
+		fmt.Println(err.Error() == "stack is empty")
 	}
 	min, _ = ms.Min()
 	fmt.Println(min == -1)
 	fmt.Println(problemEndline(problemTitle("3.2")))
+
+	fmt.Println(problemTitle("3.3"))
+	// test the simple stack
+	s := Stack{5, 0, nil}
+	fmt.Println(s.Pop())
+	fmt.Println(s.Push(50))
+	fmt.Println(s.Size() == 1)
+	fmt.Println(s.Pop())
+	// Fill Up Stack
+	fmt.Println(s.Push(12))
+	fmt.Println(s.Push(1))
+	fmt.Println(s.Push(654))
+	fmt.Println(s.Push(12300))
+	fmt.Println(s.Push("hello"))
+	// At capacity - expect an error
+	fmt.Println(s.Push(53))
+
+	fmt.Println(problemTitle("SetOfStacks"))
+	ss := SetOfStacks{2, nil, 0}
+	fmt.Println("Push(10)", ss.Push(10))
+	fmt.Println("Size == 1", ss.Size() == 1)
+	fmt.Println("Pop() --> 10", ss.Pop() == 10)
+	fmt.Println("Push(11)", ss.Push(11))
+	fmt.Println("Push(12)", ss.Push(12))
+	fmt.Println("Push(13)", ss.Push(13))
+	fmt.Println("Size == 2", ss.Size() == 2)
+	fmt.Println("Pop() --> 13", ss.Pop() == 13)
+	fmt.Println("Push(14)", ss.Push(14))
+	fmt.Println("Push(15)", ss.Push(15))
+	fmt.Println("Push(16)", ss.Push(16))
+	fmt.Println("Size == 3", ss.Size() == 3)
+	fmt.Println("Pop() -- > 16", ss.Pop() == 16)
+	fmt.Println("Pop() --> 15", ss.Pop() == 15)
+	fmt.Println("Pop() --> 14", ss.Pop() == 14)
+	fmt.Println("Pop() --> 12", ss.Pop() == 12)
+	fmt.Println("Pop() --> 11", ss.Pop() == 11)
+	fmt.Println("Pop() --> error", ss.Pop())
+	fmt.Println(ss.Size() == 0)
+	for i := range []int{0, 1, 2, 3, 4} {
+		ss.Push(i)
+	}
+	fmt.Println(ss.Size() == 3)
+	fmt.Println(ss.PopAt(1) == 3)
+	fmt.Println(ss.PopAt(1) == 2)
+	fmt.Println(ss.Size() == 2)
+	fmt.Println(ss.Pop() == 4)
+	fmt.Println(ss.Size() == 1)
+	fmt.Println(ss.Pop() == 1)
+	fmt.Println(ss.Pop() == 0)
+	fmt.Println(ss.Size() == 0)
+	fmt.Println(problemEndline(problemTitle("3.3")))
+
+	fmt.Println(problemTitle("3.4"))
+	fmt.Println(problemEndline(problemTitle("3.4")))
+
+	fmt.Println(problemTitle("3.5"))
+	q := NewQueue(5)
+	for i := range []int{0, 1, 2, 3, 4} {
+		fmt.Println(q.Enqueue(i))
+	}
+	fmt.Println(q.Enqueue(5))
+	fmt.Println(q.Dequeue())
+	fmt.Println(q.Enqueue(5))
+	for _, v := range []int{1, 2, 3, 4, 5} {
+		fmt.Println(q.Dequeue() == v)
+	}
+	fmt.Println(q.Dequeue())
+	fmt.Println(problemEndline(problemTitle("3.5")))
+
+	fmt.Println(problemTitle("3.6"))
+	fmt.Println(problemEndline(problemTitle("3.6")))
 }
