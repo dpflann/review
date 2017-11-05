@@ -186,6 +186,13 @@ func (s *Stack) Pop() interface{} {
 	return data
 }
 
+func (s *Stack) Peek() interface{} {
+	if s.size == 0 {
+		return fmt.Errorf("stack is empty")
+	}
+	return s.topOfStack.data
+}
+
 func (s *Stack) Push(data interface{}) error {
 	if s.size == s.capacity {
 		return fmt.Errorf("stack is full")
@@ -348,6 +355,9 @@ func (q *Queue) Dequeue() interface{} {
 func (q *Queue) IsFull() bool {
 	return q.enqueueStack.IsFull() && q.dequeueStack.IsFull()
 }
+
+// ===== 3.3 =====
+// Sort Stack
 
 ///\\\///\\\///[[ Begin Testing ]]\\\///\\\//\\\
 func main() {
