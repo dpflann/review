@@ -297,6 +297,15 @@ func (ss *SetOfStacks) PopAt(i int) interface{} {
 // Start state: stack @ 0 has all disks
 // End state: statck @ 2 (3rd tower) has all disks
 
+func Hanoi(disk int, from, to, aux *Stack) {
+	if disk <= 0 {
+		return
+	}
+	Hanoi(disk-1, from, aux, to)
+	to.Push(from.Pop())
+	Hanoi(disk-1, aux, to, from)
+}
+
 // ===== 3.5 =====
 // Implement a queue using two stacks
 // LIFO to support FIFO
@@ -453,6 +462,18 @@ func main() {
 	fmt.Println(problemEndline(problemTitle("3.3")))
 
 	fmt.Println(problemTitle("3.4"))
+	firstPeg, secondPeg, thirdPeg := &Stack{5, 0, nil}, &Stack{5, 0, nil}, &Stack{5, 0, nil}
+	for _, i := range []int{5, 4, 3, 2, 1} {
+		firstPeg.Push(i)
+	}
+	Hanoi(5, firstPeg, thirdPeg, secondPeg)
+	fmt.Println("First peg is empty:", firstPeg.IsEmpty() == true)
+	fmt.Println("second peg is empty:", secondPeg.IsEmpty() == true)
+	fmt.Println("third peg is full:", thirdPeg.IsFull() == true)
+	fmt.Println("third peg: ", thirdPeg)
+	for _, i := range []int{1, 2, 3, 4, 5} {
+		fmt.Println(thirdPeg.Pop() == i)
+	}
 	fmt.Println(problemEndline(problemTitle("3.4")))
 
 	fmt.Println(problemTitle("3.5"))
