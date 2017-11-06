@@ -356,8 +356,28 @@ func (q *Queue) IsFull() bool {
 	return q.enqueueStack.IsFull() && q.dequeueStack.IsFull()
 }
 
-// ===== 3.3 =====
+// ===== 3.6 =====
 // Sort Stack
+func (s *Stack) Sort() *Stack {
+	buffer := &Stack{s.size, 0, nil}
+	for !s.IsEmpty() {
+		d := s.Pop()
+		v := d.(int)
+		if !buffer.IsEmpty() {
+			buffD := buffer.Peek()
+			buffDv := buffD.(int)
+			for !buffer.IsEmpty() && buffDv > v {
+				s.Push(buffer.Pop())
+				if !buffer.IsEmpty() {
+					buffD = buffer.Peek()
+					buffDv = buffD.(int)
+				}
+			}
+		}
+		buffer.Push(d)
+	}
+	return buffer
+}
 
 ///\\\///\\\///[[ Begin Testing ]]\\\///\\\//\\\
 func main() {
@@ -501,5 +521,14 @@ func main() {
 	fmt.Println(problemEndline(problemTitle("3.5")))
 
 	fmt.Println(problemTitle("3.6"))
+	unsorted := &Stack{5, 0, nil}
+	for _, i := range []int{1, 3, 2, 5, 4} {
+		unsorted.Push(i)
+	}
+	sorted := unsorted.Sort()
+	fmt.Println(sorted)
+	for _, v := range []int{5, 4, 3, 2, 1} {
+		fmt.Println(sorted.Pop() == v)
+	}
 	fmt.Println(problemEndline(problemTitle("3.6")))
 }
