@@ -499,10 +499,11 @@ func main() {
 	for _, i := range []int{5, 4, 3, 2, 1} {
 		firstPeg.Push(i)
 	}
+	fmt.Println("First peg is full:", firstPeg.IsFull() == true)
 	Hanoi(5, firstPeg, thirdPeg, secondPeg)
-	fmt.Println("First peg is empty:", firstPeg.IsEmpty() == true)
+	fmt.Println("First peg is now empty:", firstPeg.IsEmpty() == true)
 	fmt.Println("second peg is empty:", secondPeg.IsEmpty() == true)
-	fmt.Println("third peg is full:", thirdPeg.IsFull() == true)
+	fmt.Println("third peg is now full:", thirdPeg.IsFull() == true)
 	fmt.Println("third peg: ", thirdPeg)
 	for _, i := range []int{1, 2, 3, 4, 5} {
 		fmt.Println(thirdPeg.Pop() == i)
