@@ -376,6 +376,9 @@ func (s *Stack) Sort() *Stack {
 		}
 		buffer.Push(d)
 	}
+	if buffer.IsEmpty() {
+		return s
+	}
 	return buffer
 }
 
@@ -526,6 +529,13 @@ func main() {
 		unsorted.Push(i)
 	}
 	sorted := unsorted.Sort()
+	fmt.Println(sorted)
+	alreadySorted := &Stack{5, 0, nil}
+	for _, v := range []int{5, 4, 3, 2, 1} {
+		fmt.Println(sorted.Pop() == v)
+		alreadySorted.Push(6 - v)
+	}
+	sorted = alreadySorted.Sort()
 	fmt.Println(sorted)
 	for _, v := range []int{5, 4, 3, 2, 1} {
 		fmt.Println(sorted.Pop() == v)
