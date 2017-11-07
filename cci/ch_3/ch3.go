@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"time"
 )
 
 func problemTitle(s string) string {
@@ -382,6 +383,136 @@ func (s *Stack) Sort() *Stack {
 	return buffer
 }
 
+// ===== 3.7 =====
+// Animal Shelter
+type LNode interface {
+	Next() LNode
+	Data() interface{}
+	SetNext(LNode)
+}
+
+type AnimalNode struct {
+	next LNode
+	data interface{}
+	date time.Time
+}
+
+func (an *AnimalNode) Next() LNode {
+	return an.next
+}
+
+func (an *AnimalNode) Data() interface{} {
+	return an.data
+}
+
+func (an *AnimalNode) SetNext(ln LNode) {
+	an.next = ln
+}
+
+type LinkedList struct {
+	Head LNode
+}
+
+func (LL *LinkedList) AddNode(newNode LNode) {
+	if LL == nil {
+		// initialize
+		LL = &LinkedList{newNode}
+	} else if LL.Head == nil {
+		LL.Head = newNode
+	} else {
+		currentNode := LL.Head
+		for currentNode.Next() != nil {
+			currentNode = currentNode.Next()
+		}
+		currentNode.SetNext(newNode)
+	}
+}
+
+func (LL *LinkedList) RemoveNode() LNode {
+	if LL == nil {
+		return nil
+	} else if LL.Head == nil {
+		return nil
+	} else {
+		n := LL.Head
+		LL.Head = LL.Head.Next()
+		return n
+	}
+}
+
+func (Llist1 *LinkedList) Equals(Llist2 *LinkedList) bool {
+	if Llist1 == nil && Llist2 == nil {
+		return true
+	}
+	if Llist1 == nil || Llist2 == nil {
+		return false
+	}
+	currentNode := Llist1.Head
+	currentNoNode := Llist2.Head
+	for currentNode != nil && currentNoNode != nil {
+		if currentNode.Data() != currentNoNode.Data() {
+			return false
+		}
+		currentNode = currentNode.Next()
+		currentNoNode = currentNoNode.Next()
+	}
+	return true
+}
+
+type AnimalShelter struct {
+	Dogs LinkedList
+	Cats LinkedList
+}
+
+func (as *AnimalShelter) Enqueue(an *AnimalNode) error {
+	if an.data == "cat" {
+		an.date = time.Now()
+		as.Cats.AddNode(an)
+	} else if an.data == "dog" {
+		an.date = time.Now()
+		as.Dogs.AddNode(an)
+	} else {
+		return fmt.Errorf("The shelter accepts only dogs and cats.")
+	}
+	return nil
+}
+
+func (as *AnimalShelter) DequeueAny() LNode {
+	// select oldest animal
+	if as.Cats.Head == nil && as.Dogs.Head == nil {
+		return nil
+	}
+	if as.Cats.Head == nil {
+		return as.Dogs.RemoveNode()
+	} else if as.Dogs.Head == nil {
+		return as.Cats.RemoveNode()
+	} else {
+		cat := as.Cats.Head
+		dog := as.Dogs.Head
+		catAn := cat.(*AnimalNode)
+		dogAn := dog.(*AnimalNode)
+		if catAn.date.Before(dogAn.date) {
+			return as.Cats.RemoveNode()
+		} else {
+			return as.Dogs.RemoveNode()
+		}
+	}
+}
+
+func (as *AnimalShelter) DequeueDog() LNode {
+	if as.Dogs.Head == nil {
+		return nil
+	}
+	return as.Dogs.RemoveNode()
+}
+
+func (as *AnimalShelter) DequeueCat() LNode {
+	if as.Cats.Head == nil {
+		return nil
+	}
+	return as.Cats.RemoveNode()
+}
+
 ///\\\///\\\///[[ Begin Testing ]]\\\///\\\//\\\
 func main() {
 	fmt.Println(problemTitle("3.1"))
@@ -542,4 +673,40 @@ func main() {
 		fmt.Println(sorted.Pop() == v)
 	}
 	fmt.Println(problemEndline(problemTitle("3.6")))
+
+	fmt.Println(problemTitle("3.7"))
+	as := &AnimalShelter{}
+	// add some dogs
+	for _ = range []int{1, 2, 3} {
+		an := &AnimalNode{}
+		an.data = "dog"
+		as.Enqueue(an)
+	}
+	// add some cats
+	for _ = range []int{1, 2, 3} {
+		an := &AnimalNode{}
+		an.data = "cat"
+		as.Enqueue(an)
+	}
+	// dog, dog, dog
+	// cat, cat, cat
+	// dog, dog, dog, cat, cat, cat
+	// Add more animals
+	// dog, dog, dog, cat, cat, cat, [ dog, cat, dog, cat ]
+	for _, v := range []int{1, 2, 3, 4} {
+		an := &AnimalNode{}
+		if v%2 == 0 {
+			an.data = "cat"
+		} else {
+			an.data = "dog"
+		}
+		as.Enqueue(an)
+	}
+	// DequeueAny - should all be dogs then cats
+	for _, v := range []string{"dog", "dog", "dog", "cat", "cat", "cat"} {
+		fmt.Println(as.DequeueAny().Data() == v)
+	}
+	fmt.Println(as.DequeueCat().Data() == "cat")
+	fmt.Println(as.DequeueDog().Data() == "dog")
+	fmt.Println(problemEndline(problemTitle("3.7")))
 }
