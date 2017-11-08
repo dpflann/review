@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"math"
+	"strconv"
 )
 
 func problemTitle(s string) string {
@@ -28,6 +29,33 @@ type BNode struct {
 
 func NewBNode(data int) *BNode {
 	return &BNode{data, nil, nil}
+}
+
+func InOrder(root *BNode, str *string) {
+	if root == nil {
+		return
+	}
+	InOrder(root.Left, str)
+	*str += strconv.Itoa(root.Data) + " -> "
+	InOrder(root.Right, str)
+}
+
+func PreOrder(root *BNode, str *string) {
+	if root == nil {
+		return
+	}
+	*str += strconv.Itoa(root.Data) + " -> "
+	PreOrder(root.Left, str)
+	PreOrder(root.Right, str)
+}
+
+func PostOrder(root *BNode, str *string) {
+	if root == nil {
+		return
+	}
+	PostOrder(root.Left, str)
+	PostOrder(root.Right, str)
+	*str += strconv.Itoa(root.Data) + " -> "
 }
 
 // ===== 4.1 =====
@@ -69,6 +97,22 @@ func main() {
 	root.Right.Left.Right = NewBNode(11)
 	root.Right.Right.Left = NewBNode(12)
 	root.Right.Right.Right = NewBNode(13)
+
+	fmt.Println("In Order")
+	result := ""
+	InOrder(root, &result)
+	fmt.Println(result)
+
+	fmt.Println("Pre Order")
+	result = ""
+	PreOrder(root, &result)
+	fmt.Println(result)
+
+	fmt.Println("Post Order")
+	result = ""
+	PostOrder(root, &result)
+	fmt.Println(result)
+
 	fmt.Println(IsBalanced(root) == true)
 	// make an unbalanced tree
 	root = NewBNode(100)
