@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"math"
+	"math/rand"
 	"strconv"
+	"time"
 )
 
 func problemTitle(s string) string {
@@ -78,6 +80,109 @@ func IsBalanced(bnode *BNode) bool {
 	}
 }
 
+// ===== 4.1 =====
+// This current Graph concept has little
+// appreciation for edges, edge weight, and explicit concept
+// of vertex.
+
+type GNode struct {
+	Adjacents []*GNode
+	Data      interface{}
+	Visited   bool
+}
+
+func (n *GNode) AddAdjacent(adjacentNode *GNode) {
+	if adjacentNode == nil {
+		return
+	}
+	if n.Adjacents == nil {
+		n.Adjacents = []*GNode{adjacentNode}
+	} else {
+		for _, an := range n.Adjacents {
+			if an == adjacentNode {
+				return
+			}
+		}
+		n.Adjacents = append(n.Adjacents, adjacentNode)
+	}
+}
+
+func (n *GNode) RemoveAdjacent(gNode *GNode) {
+	if gNode == nil {
+		return
+	}
+	if len(n.Adjacents) > 0 {
+		for i := range n.Adjacents {
+			if n.Adjacents[i] == gNode {
+				n.Adjacents = append(n.Adjacents[0:i], n.Adjacents[i+1:]...)
+			}
+		}
+	}
+}
+
+func (n *GNode) IsAdjacentTo(gNode *GNode) bool {
+	if gNode == nil || n.Adjacents == nil {
+		return false
+	}
+	for _, node := range n.Adjacents {
+		if gNode == node {
+			return true
+		}
+	}
+	return false
+}
+
+func (n *GNode) String() string {
+	s := fmt.Sprintf("Node: %v\n", n.Data)
+	if n.Adjacents == nil {
+		return s
+	}
+	for _, adj := range n.Adjacents {
+		s += fmt.Sprintf("\t-> %v\n", adj.Data)
+	}
+	return s
+}
+
+type Graph struct {
+	Nodes []*GNode
+}
+
+func (g *Graph) HasPath(start, end *GNode) bool {
+	// Perform BFS and check adjacenct nodes of current
+	// node for existence of end.
+	if start == nil || end == nil {
+		return false
+	}
+	nodesQ := []*GNode{}
+	start.Visited = true
+	nodesQ = append(nodesQ, start)
+	for len(nodesQ) > 0 {
+		currentNode := nodesQ[0]
+		nodesQ = nodesQ[1:]
+		for _, n := range currentNode.Adjacents {
+			if n == end {
+				return true
+			}
+			if !n.Visited {
+				n.Visited = true
+				nodesQ = append(nodesQ, n)
+			}
+		}
+	}
+	return false
+}
+
+func (g *Graph) String() string {
+	s := "Graph:\n"
+	if g.Nodes == nil {
+		return s
+	}
+	for _, gn := range g.Nodes {
+		s += gn.String()
+	}
+	return s
+}
+
 func main() {
 	fmt.Println(problemTitle("4.1"))
 	fmt.Println(IsBalanced(nil) == true)
@@ -125,4 +230,47 @@ func main() {
 	root.Left.Right.Right = NewBNode(9)
 	fmt.Println(IsBalanced(root) == false)
 	fmt.Println(problemEndline(problemTitle("4.1")))
+
+	fmt.Println(problemTitle("4.2"))
+	// Make nodes and graph to test `HasPath`
+	graph := Graph{}
+	for i := 0; i < 10; i++ {
+		n := GNode{
+			Adjacents: nil,
+			Data:      i,
+			Visited:   false,
+		}
+		graph.Nodes = append(graph.Nodes, &n)
+	}
+	s1 := rand.NewSource(time.Now().UnixNano())
+	r1 := rand.New(s1)
+	start, end := &GNode{}, &GNode{}
+	for i := 10; i < 20; i++ {
+		// directed graph
+		// pick nodes from the graph and create connections
+		i := r1.Int31n(10)
+		j := r1.Int31n(10)
+		for i == j {
+			j = r1.Int31n(10)
+		}
+		node1 := graph.Nodes[i]
+		node2 := graph.Nodes[j]
+		// node1 --> node2
+		node1.AddAdjacent(node2)
+	}
+	// Ensure valid start, end
+	start = graph.Nodes[0]
+	end = graph.Nodes[9]
+	start.AddAdjacent(end)
+	fmt.Printf("Connected start (%v) to end (%v)\n", start.Data, end.Data)
+	fmt.Println(graph)
+	fmt.Println("graph.HasPath(start, end)?")
+	fmt.Println(graph.HasPath(start, end) == true)
+	loneNode := &GNode{
+		Adjacents: nil,
+		Data:      111111,
+		Visited:   false,
+	}
+	fmt.Println(graph.HasPath(start, loneNode) == false)
+	fmt.Println(problemEndline(problemTitle("4.2")))
 }
