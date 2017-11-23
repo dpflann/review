@@ -325,10 +325,12 @@ func main() {
 	InOrder(oBst, &inOrder)
 	fmt.Println(inOrder)
 	fmt.Println("oBST has expected height:", Height(oBst) == expectedHeight)
-	fmt.Println(problemEndline(problemTitle("4.3")))
 
+	// Edge Cases
 	edgeCaseBST := MinimalHeightBST([]int{})
 	fmt.Println(edgeCaseBST == nil)
 	edgeCaseBST = MinimalHeightBST([]int{0})
 	fmt.Println(Height(edgeCaseBST) == 1)
+
+	fmt.Println(problemEndline(problemTitle("4.3")))
 }
