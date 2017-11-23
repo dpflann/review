@@ -80,7 +80,7 @@ func IsBalanced(bnode *BNode) bool {
 	}
 }
 
-// ===== 4.1 =====
+// ===== 4.2 =====
 // This current Graph concept has little
 // appreciation for edges, edge weight, and explicit concept
 // of vertex.
@@ -183,6 +183,41 @@ func (g *Graph) String() string {
 	return s
 }
 
+// ===== 4.3 =====
+// Construct minimal height binary search tree from array in ascending sorted order
+// [1, 2, 3, 4, 5, 6, 7]
+//       4
+//    /     \
+//   2       6
+//  / \     / \
+// 1   3   5   7
+
+// MinimalHeightBST converts an array in ascending order into
+// a binary search tree with minimal height.
+// A *BNode is returned which is the root of the BST.
+func MinimalHeightBST(sortedArray []int) *BNode {
+	if len(sortedArray) == 0 {
+		return nil
+	}
+	if len(sortedArray) == 1 {
+		return &BNode{
+			Data:  sortedArray[0],
+			Left:  nil,
+			Right: nil,
+		}
+	}
+
+	index := len(sortedArray) / 2
+	root := &BNode{}
+	root.Data = sortedArray[index]
+
+	root.Left = MinimalHeightBST(sortedArray[0:index])
+	root.Right = MinimalHeightBST(sortedArray[index+1:])
+
+	return root
+}
+
+//\\//\\//\\ Main - Testing Solutions //\\//\\//\\
 func main() {
 	fmt.Println(problemTitle("4.1"))
 	fmt.Println(IsBalanced(nil) == true)
@@ -273,4 +308,27 @@ func main() {
 	}
 	fmt.Println(graph.HasPath(start, loneNode) == false)
 	fmt.Println(problemEndline(problemTitle("4.2")))
+
+	fmt.Println(problemTitle("4.3"))
+	sortedArrayEvenLength := []int{0, 1, 2, 3, 4, 5, 6, 7}
+	expectedHeight := 4
+	eBst := MinimalHeightBST(sortedArrayEvenLength)
+	inOrder := ""
+	InOrder(eBst, &inOrder)
+	fmt.Println(inOrder)
+	fmt.Println("eBST has expected height:", Height(eBst) == expectedHeight)
+
+	sortedArrayOddLength := []int{0, 1, 2, 3, 4, 5, 6}
+	expectedHeight = 3
+	oBst := MinimalHeightBST(sortedArrayOddLength)
+	inOrder = ""
+	InOrder(oBst, &inOrder)
+	fmt.Println(inOrder)
+	fmt.Println("oBST has expected height:", Height(oBst) == expectedHeight)
+	fmt.Println(problemEndline(problemTitle("4.3")))
+
+	edgeCaseBST := MinimalHeightBST([]int{})
+	fmt.Println(edgeCaseBST == nil)
+	edgeCaseBST = MinimalHeightBST([]int{0})
+	fmt.Println(Height(edgeCaseBST) == 1)
 }
