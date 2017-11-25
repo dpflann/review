@@ -84,7 +84,6 @@ func IsBalanced(bnode *BNode) bool {
 // This current Graph concept has little
 // appreciation for edges, edge weight, and explicit concept
 // of vertex.
-
 type GNode struct {
 	Adjacents []*GNode
 	Data      interface{}
@@ -195,6 +194,7 @@ func (g *Graph) String() string {
 // MinimalHeightBST converts an array in ascending order into
 // a binary search tree with minimal height.
 // A *BNode is returned which is the root of the BST.
+// This actually just makes a bt what happens to be a bst by the fact that the array is sorted
 func MinimalHeightBST(sortedArray []int) *BNode {
 	if len(sortedArray) == 0 {
 		return nil
@@ -216,6 +216,56 @@ func MinimalHeightBST(sortedArray []int) *BNode {
 
 	return root
 }
+
+// ===== 4.4 =====
+// Given a binary tree, return a collection of all nodes at each depth
+// Depth of D will yield D linkedlists
+//       4
+//    /     \
+//   2       6
+//  / \     / \
+// 1   3   5   7
+// [4], [2, 6], [1, 3, 5, 7]
+
+// ===== 4.5 =====
+// Check if a binary tree is a binary search tree
+// What are the properties of a binary search tree?
+// In order traversal is in ascending order?
+
+func InOrderValues(root *BNode, values *[]int) {
+	if root == nil {
+		return
+	}
+	InOrderValues(root.Left, values)
+	*values = append(*values, root.Data)
+	InOrderValues(root.Right, values)
+}
+
+func (bn *BNode) IsBST() bool {
+	values := []int{}
+	InOrderValues(bn, &values)
+	for i := 0; i < len(values)-2; i++ {
+		if values[i] > values[i+1] {
+			return false
+		}
+	}
+	return true
+}
+
+// ===== 4.6 =====
+// Find the 'next' node (in order successor) of a given node in a binary search
+// tree. Assume each node has a link to its parent - this should allow movement up
+
+// ===== 4.7 =====
+// Find the first common ancestor of two nodes in a binary tree
+
+// ===== 4.8 =====
+// Determine if T2 is a subtree fo T1. For a very large tree.
+
+// ===== 4.9 =====
+// For a binary tree with nodes with values, print all paths
+// which sum to a given value. Paths can be within the tree and do not
+// necessarily need to contain the root or leaves
 
 //\\//\\//\\ Main - Testing Solutions //\\//\\//\\
 func main() {
@@ -331,6 +381,17 @@ func main() {
 	fmt.Println(edgeCaseBST == nil)
 	edgeCaseBST = MinimalHeightBST([]int{0})
 	fmt.Println(Height(edgeCaseBST) == 1)
-
 	fmt.Println(problemEndline(problemTitle("4.3")))
+
+	fmt.Println(problemTitle("4.4"))
+	fmt.Println(problemEndline(problemTitle("4.4")))
+
+	fmt.Println(problemTitle("4.5"))
+	sortedArrayOddLength = []int{0, 1, 2, 3, 4, 5, 6}
+	oBst = MinimalHeightBST(sortedArrayOddLength)
+	fmt.Println("IsBST? ", oBst.IsBST() == true)
+	sortedArrayOddLength = []int{0, 1, 1, 45, 10, 5, 6}
+	oBst = MinimalHeightBST(sortedArrayOddLength)
+	fmt.Println("IsBST? ", oBst.IsBST() == false)
+	fmt.Println(problemEndline(problemTitle("4.5")))
 }
