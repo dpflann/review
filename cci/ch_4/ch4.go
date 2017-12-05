@@ -227,6 +227,30 @@ func MinimalHeightBST(sortedArray []int) *BNode {
 // 1   3   5   7
 // [4], [2, 6], [1, 3, 5, 7]
 
+func CollectDepths(root *BNode) [][]*BNode {
+	depthMap := make(map[int][]*BNode)
+	collectDepthsHelper(root, 0, depthMap)
+	depths := make([][]*BNode, len(depthMap))
+	for k, v := range depthMap {
+		fmt.Println("Depth: ", k, " size: ", len(v))
+		depths[k] = v
+	}
+	return depths
+}
+
+func collectDepthsHelper(root *BNode, d int, depths map[int][]*BNode) {
+	if root == nil {
+		return
+	}
+	collectDepthsHelper(root.Left, d+1, depths)
+	if _, ok := depths[d]; ok {
+		depths[d] = append(depths[d], root)
+	} else {
+		depths[d] = []*BNode{root}
+	}
+	collectDepthsHelper(root.Right, d+1, depths)
+}
+
 // ===== 4.5 =====
 // Check if a binary tree is a binary search tree
 // What are the properties of a binary search tree?
@@ -384,6 +408,31 @@ func main() {
 	fmt.Println(problemEndline(problemTitle("4.3")))
 
 	fmt.Println(problemTitle("4.4"))
+	bstForDepths := MinimalHeightBST(sortedArrayOddLength)
+	expectedDepths := make([][]int, 3)
+	expectedDepths[0] = []int{3}
+	expectedDepths[1] = []int{1, 5}
+	expectedDepths[2] = []int{0, 2, 4, 6}
+	depths := CollectDepths(bstForDepths)
+	fullBreak := false
+	for i, d := range depths {
+		if len(d) != len(expectedDepths[i]) {
+			fmt.Println("CollectDepths(...) failed")
+			fullBreak = true
+			break
+		}
+		for j, v := range d {
+			if expectedDepths[i][j] != v.Data {
+				fmt.Println("CollectDepths(...) failed")
+				fullBreak = true
+				break
+			}
+		}
+		if fullBreak {
+			break
+		}
+	}
+	fmt.Println(fullBreak == false)
 	fmt.Println(problemEndline(problemTitle("4.4")))
 
 	fmt.Println(problemTitle("4.5"))
