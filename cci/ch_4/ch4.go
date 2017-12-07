@@ -279,6 +279,86 @@ func (bn *BNode) IsBST() bool {
 // ===== 4.6 =====
 // Find the 'next' node (in order successor) of a given node in a binary search
 // tree. Assume each node has a link to its parent - this should allow movement up
+type BwPNode struct {
+	Parent *BwPNode
+	Data   int
+	Left   *BwPNode
+	Right  *BwPNode
+}
+
+func MinimalHeightBwPST(sortedArray []int, parent *BwPNode) *BwPNode {
+	if len(sortedArray) == 0 {
+		return nil
+	}
+	if len(sortedArray) == 1 {
+		return &BwPNode{
+			Data:   sortedArray[0],
+			Parent: parent,
+			Left:   nil,
+			Right:  nil,
+		}
+	}
+
+	index := len(sortedArray) / 2
+	root := &BwPNode{}
+	root.Data = sortedArray[index]
+
+	root.Parent = parent
+	root.Left = MinimalHeightBwPST(sortedArray[0:index], root)
+	root.Right = MinimalHeightBwPST(sortedArray[index+1:], root)
+
+	return root
+}
+
+func NextNode(node *BwPNode) *BwPNode {
+	if node == nil {
+		return nil
+	}
+	// check if bottom
+	if node.Left == nil && node.Right == nil {
+		// which side is this on?
+		if node.Parent.Left == node {
+			// is left, therefore less, therefore parent can be returned
+			return node.Parent
+		}
+		// otherwise is right, so must go all the all to the way to the root
+		for node.Parent != nil {
+			node = node.Parent
+		}
+		return node
+	}
+	// there no nodes greater than this node, so return it
+	if node.Right == nil {
+		return node
+	} else {
+		// there are nodes greater than this one, so get the smallest next one
+		node = node.Right
+		for node.Left != nil {
+			node = node.Left
+		}
+		return node
+	}
+}
+
+func FindNodeBwPST(data int, root *BwPNode) *BwPNode {
+	if root.Data == data {
+		return root
+	}
+	if root.Left == nil && root.Right == nil {
+		return nil
+	}
+	// go left
+	var leftNode, rightNode *BwPNode
+	if data < root.Data {
+		leftNode = FindNodeBwPST(data, root.Left)
+	}
+	if leftNode != nil {
+		return leftNode
+	}
+	// go right
+	rightNode = FindNodeBwPST(data, root.Right)
+	return rightNode
+}
 
 // ===== 4.7 =====
 // Find the first common ancestor of two nodes in a binary tree
@@ -443,4 +523,30 @@ func main() {
 	oBst = MinimalHeightBST(sortedArrayOddLength)
 	fmt.Println("IsBST? ", oBst.IsBST() == false)
 	fmt.Println(problemEndline(problemTitle("4.5")))
+
+	fmt.Println(problemTitle("4.6"))
+	sortedArrayOddLength = []int{0, 1, 2, 3, 4, 5, 6}
+	bwpST := MinimalHeightBwPST(sortedArrayOddLength, nil)
+	//expectedData := 4
+
+	// check root case
+	rootData := bwpST.Data
+	next := NextNode(bwpST)
+	fmt.Println("NextNode(...)")
+	fmt.Println(next.Data == rootData+1)
+	// check leaf case - left
+	targetNodeData := 0
+	node := FindNodeBwPST(targetNodeData, bwpST)
+	fmt.Println(node.Data == targetNodeData && NextNode(node).Data == node.Parent.Data)
+	// check leaf case - right
+	targetNodeData = 2
+	node = FindNodeBwPST(targetNodeData, bwpST)
+	fmt.Println(node.Data == targetNodeData)
+	fmt.Println(NextNode(node).Data == rootData)
+	// check middle case
+	targetNodeData = 1
+	node = FindNodeBwPST(targetNodeData, bwpST)
+	fmt.Println(node.Data == targetNodeData)
+	fmt.Println(NextNode(node).Data == node.Right.Data)
+	fmt.Println(problemEndline(problemTitle("4.6")))
 }
