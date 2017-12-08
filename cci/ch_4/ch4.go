@@ -671,5 +671,6 @@ func main() {
 	fmt.Println(FindCommonAncestor(nodeZero, nodeTwo, bstForAncestry) == nodeOne)
 	// same side right
 	fmt.Println(FindCommonAncestor(nodeFour, nodeFive, bstForAncestry) == nodeFive)
+	fmt.Println(FindCommonAncestor(nodeFour, nodeFour, bstForAncestry) == nodeFour)
 	fmt.Println(problemEndline(problemTitle("4.7")))
 }
