@@ -362,6 +362,97 @@ func FindNodeBwPST(data int, root *BwPNode) *BwPNode {
 
 // ===== 4.7 =====
 // Find the first common ancestor of two nodes in a binary tree
+func FindCommonAncestor(nodeOne, nodeTwo, root *BNode) *BNode {
+	// locate each node, determine which side of root
+	if nodeOne == nil || nodeTwo == nil || root == nil {
+		return nil
+	}
+
+	if nodeOne == nodeTwo {
+		return nodeOne
+	}
+
+	sideOne, _ := LocateNodeBST(nodeOne, root)
+	sideTwo, _ := LocateNodeBST(nodeTwo, root)
+
+	if sideOne == 0 || sideTwo == 0 {
+		// One isn't in the tree, no ancestor
+		return nil
+	}
+
+	if nodeOne == root ||
+		nodeTwo == root ||
+		sideOne == 2 && sideTwo == 3 ||
+		sideOne == 3 && sideTwo == 2 {
+		// the nodes are on opposite sides or one is the root,
+		// common ancestor is root
+		return root
+	}
+
+	if sideOne == 2 && sideTwo == 2 {
+		// both are left side
+		return FindCommonAncestor(nodeOne, nodeTwo, root.Left)
+	}
+
+	if sideOne == 3 && sideTwo == 3 {
+		// both are right side
+		return FindCommonAncestor(nodeOne, nodeTwo, root.Right)
+	}
+
+	return nil
+}
+
+func LocateNodeBST(node, root *BNode) (int, *BNode) {
+	if node == nil || root == nil {
+		return 0, nil
+	}
+
+	if root.Data == node.Data {
+		return 1, root
+	}
+
+	if root.Left == nil && root.Right == nil {
+		return 0, nil
+	}
+
+	// go left
+	var leftNode, rightNode *BNode
+	_, leftNode = LocateNodeBST(node, root.Left)
+	// go right
+	_, rightNode = LocateNodeBST(node, root.Right)
+
+	if leftNode != nil {
+		return 2, leftNode
+	}
+
+	if rightNode != nil {
+		return 3, rightNode
+	}
+	return 0, nil
+}
+
+func FindNodeBST(data int, root *BNode) (int, *BNode) {
+	if root.Data == data {
+		return 1, root
+	}
+	if root.Left == nil && root.Right == nil {
+		return 0, nil
+	}
+	// go left
+	var leftNode, rightNode *BNode
+	_, leftNode = FindNodeBST(data, root.Left)
+	// go right
+	_, rightNode = FindNodeBST(data, root.Right)
+
+	if leftNode != nil {
+		return 2, leftNode
+	}
+	if rightNode != nil {
+		return 3, rightNode
+	}
+
+	return 0, nil
+}
 
 // ===== 4.8 =====
 // Determine if T2 is a subtree fo T1. For a very large tree.
@@ -527,7 +618,6 @@ func main() {
 	fmt.Println(problemTitle("4.6"))
 	sortedArrayOddLength = []int{0, 1, 2, 3, 4, 5, 6}
 	bwpST := MinimalHeightBwPST(sortedArrayOddLength, nil)
-	//expectedData := 4
 
 	// check root case
 	rootData := bwpST.Data
@@ -549,4 +639,37 @@ func main() {
 	fmt.Println(node.Data == targetNodeData)
 	fmt.Println(NextNode(node).Data == node.Right.Data)
 	fmt.Println(problemEndline(problemTitle("4.6")))
+
+	fmt.Println(problemTitle("4.7"))
+	sortedArrayOddLength = []int{0, 1, 2, 3, 4, 5, 6}
+	bstForAncestry := MinimalHeightBST(sortedArrayOddLength)
+	//       3
+	//    /     \
+	//   1       5
+	//  / \     / \
+	// 0   2   4   6
+	sideZero, nodeZero := FindNodeBST(0, bstForAncestry)
+	sideOne, nodeOne := FindNodeBST(1, bstForAncestry)
+	sideTwo, nodeTwo := FindNodeBST(2, bstForAncestry)
+	//sideThree, nodeThree := FindNodeBST(3, bstForAncestry)
+	sideFour, nodeFour := FindNodeBST(4, bstForAncestry)
+	sideFive, nodeFive := FindNodeBST(5, bstForAncestry)
+	sideNine, nodeNine := FindNodeBST(9, bstForAncestry)
+	fmt.Println(sideZero == 2)
+	fmt.Println(sideOne == 2)
+	fmt.Println(sideTwo == 2)
+	//fmt.Println(sideThree == 1)
+	fmt.Println(sideFour == 3)
+	fmt.Println(sideFive == 3)
+	fmt.Println(sideNine == 0)
+	fmt.Println("FindCommonAncestor(...)")
+	// none
+	fmt.Println(FindCommonAncestor(nodeZero, nodeNine, bstForAncestry) == nil)
+	// root - opposite sides
+	fmt.Println(FindCommonAncestor(nodeZero, nodeFour, bstForAncestry) == bstForAncestry)
+	// same side left
+	fmt.Println(FindCommonAncestor(nodeZero, nodeTwo, bstForAncestry) == nodeOne)
+	// same side right
+	fmt.Println(FindCommonAncestor(nodeFour, nodeFive, bstForAncestry) == nodeFive)
+	fmt.Println(problemEndline(problemTitle("4.7")))
 }
