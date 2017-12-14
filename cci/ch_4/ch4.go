@@ -456,6 +456,56 @@ func FindNodeBST(data int, root *BNode) (int, *BNode) {
 
 // ===== 4.8 =====
 // Determine if T2 is a subtree fo T1. For a very large tree.
+func Walk(node *BNode, ch chan *BNode) {
+	if node == nil {
+		return
+	}
+	Walk(node.Left, ch)
+	ch <- node
+	Walk(node.Right, ch)
+}
+
+func Walker(node *BNode) <-chan *BNode {
+	ch := make(chan *BNode)
+	go func() {
+		Walk(node, ch)
+		close(ch)
+	}()
+	return ch
+}
+
+func Compare(n1, n2 *BNode) bool {
+	c1, c2 := Walker(n1), Walker(n2)
+	for {
+		v1, ok1 := <-c1
+		v2, ok2 := <-c2
+		if !ok1 || !ok2 {
+			return ok1 == ok2
+		}
+		if v1.Data != v2.Data {
+			break
+		}
+	}
+	return false
+}
+
+func IsSubtree(t1, t2 *BNode) bool {
+	if t1 == nil || t2 == nil {
+		return false
+	}
+	// Walk t1 until a node is found that equals t2
+	// The begin comparison from that node
+	t1WalkerChan := Walker(t1)
+	for {
+		t, ok := <-t1WalkerChan
+		if !ok {
+			return false
+		}
+		if t.Data == t2.Data && Compare(t, t2) {
+			return true
+		}
+	}
+}
 
 // ===== 4.9 =====
 // For a binary tree with nodes with values, print all paths
@@ -673,4 +723,13 @@ func main() {
 	fmt.Println(FindCommonAncestor(nodeFour, nodeFive, bstForAncestry) == nodeFive)
 	fmt.Println(FindCommonAncestor(nodeFour, nodeFour, bstForAncestry) == nodeFour)
 	fmt.Println(problemEndline(problemTitle("4.7")))
+
+	fmt.Println(problemTitle("4.8"))
+	sortedArrayOddLength = []int{0, 1, 2, 3, 4, 5, 6}
+	treeForSubtreeProblem := MinimalHeightBST(sortedArrayOddLength)
+	_, subtree := FindNodeBST(5, treeForSubtreeProblem)
+	fmt.Println("IsSubtree(t1, t2)")
+	fmt.Println(IsSubtree(treeForSubtreeProblem, subtree) == true)
+	fmt.Println(IsSubtree(treeForSubtreeProblem, &BNode{Data: 1000, Left: nil, Right: nil}) == false)
+	fmt.Println(problemEndline(problemTitle("4.8")))
 }
