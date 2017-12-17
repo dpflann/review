@@ -60,9 +60,6 @@ func Insert(N, M, i, j uint32) uint32 {
 		rightSide = clearBitsItoZero(N, i-1)
 	}
 	mask := leftSide ^ rightSide
-	fmt.Println(leftSide)
-	fmt.Println(rightSide)
-	fmt.Println(mask)
 	return mask | (M << i)
 }
 
