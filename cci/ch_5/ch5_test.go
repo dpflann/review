@@ -73,7 +73,7 @@ func bTest(n, ns, nl uint32) bitsTest {
 		expectedNextLargest:  nl,
 	}
 }
-func TestSameBits(t *testing.T) {
+func TestNexts(t *testing.T) {
 	bitsTests := []bitsTest{
 		bTest(0, 0, 0),
 		bTest(3, 3, 5),
@@ -86,6 +86,27 @@ func TestSameBits(t *testing.T) {
 	for _, bTest := range bitsTests {
 		if ns, nl := Nexts(bTest.N); ns != bTest.expectedNextSmallest && nl != bTest.expectedNextLargest {
 			t.Fatalf("Nexts(%d) == (%d, %d), != expected values of (%d, %d)", bTest.N, ns, nl, bTest.expectedNextSmallest, bTest.expectedNextLargest)
+		}
+	}
+}
+
+//\\//\\ 5.4 //\\//\\
+func TestIsPowerOfTwo(t *testing.T) {
+	type powTwoTest struct {
+		n  uint32
+		is bool
+	}
+	pTtests := []powTwoTest{
+		powTwoTest{0, true},
+		powTwoTest{1, true},
+		powTwoTest{2, true},
+		powTwoTest{24, false},
+		powTwoTest{100, false},
+		powTwoTest{16, true},
+	}
+	for _, pTtest := range pTtests {
+		if result := IsPowerOfTwo(pTtest.n); result != pTtest.is {
+			t.Fatalf("IsPowerOfTwo(%d) == %t, != %t", pTtest.n, result, pTtest.is)
 		}
 	}
 }

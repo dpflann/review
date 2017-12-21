@@ -96,6 +96,11 @@ func Nexts(n uint32) (uint32, uint32) {
 	return ns, nl
 }
 
+//\\//\\ 5.4 //\\//\\
+func IsPowerOfTwo(n uint32) bool {
+	return (n & (n - 1)) == 0
+}
+
 //\\//\\//\\ MAIN //\\//\\//\\
 func main() {
 	fmt.Println(problemTitle("5.1"))
