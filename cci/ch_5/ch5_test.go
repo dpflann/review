@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+//\\//\\ 5.1 //\\//\\
 func TestInsert(t *testing.T) {
 	type insertTest struct {
 		N             uint32
@@ -51,7 +52,7 @@ func TestInsert(t *testing.T) {
 	}
 	for _, insertTest := range insertTests {
 		if val := Insert(insertTest.N, insertTest.M, insertTest.i, insertTest.j); val != insertTest.expectedValue {
-			t.Fatal("Insert(%d, %d, %d, %d) == val != expectdValue of %d", insertTest.N, insertTest.M, insertTest.i, insertTest.j, val, insertTest.expectedValue)
+			t.Fatalf("Insert(%d, %d, %d, %d) == val != expectdValue of %d", insertTest.N, insertTest.M, insertTest.i, insertTest.j, val, insertTest.expectedValue)
 		}
 	}
 }
