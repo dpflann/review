@@ -63,6 +63,39 @@ func Insert(N, M, i, j uint32) uint32 {
 	return mask | (M << i)
 }
 
+//\\//\\ 5.2 //\\//\\
+
+//\\//\\ 5.3 //\\//\\
+// for N with n bits set to 1, find the next smallest and next largest with m = n bits set to 1
+func countOnes(n uint32) int {
+	count := 0
+	for n > 0 {
+		if (n & 1) == 0 {
+			count += 1
+		}
+		n = n >> 1
+	}
+	return count
+}
+
+func Nexts(n uint32) (uint32, uint32) {
+	if n == 0 || n == (1<<32-1) {
+		return n, n
+	}
+	ones := countOnes(n)
+	if ones == 1 {
+		return n >> 1, n << 1
+	}
+	ns, nl := n, n
+	for ns > 0 && countOnes(ns) != ones {
+		ns -= 1
+	}
+	for nl < (1<<32-1) && countOnes(nl) != ones {
+		nl += 1
+	}
+	return ns, nl
+}
+
 //\\//\\//\\ MAIN //\\//\\//\\
 func main() {
 	fmt.Println(problemTitle("5.1"))

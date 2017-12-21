@@ -55,3 +55,36 @@ func TestInsert(t *testing.T) {
 		}
 	}
 }
+
+//\\//\\ 5.2 //\\//\\
+
+//\\//\\ 5.3 //\\//\\
+type bitsTest struct {
+	N                    uint32
+	expectedNextSmallest uint32
+	expectedNextLargest  uint32
+}
+
+func bTest(n, ns, nl uint32) bitsTest {
+	return bitsTest{
+		N:                    n,
+		expectedNextSmallest: ns,
+		expectedNextLargest:  nl,
+	}
+}
+func TestSameBits(t *testing.T) {
+	bitsTests := []bitsTest{
+		bTest(0, 0, 0),
+		bTest(3, 3, 5),
+		bTest(1, 1, 2),
+		bTest(2, 1, 4),
+		bTest(1<<31, 1<<31, 1<<30),
+		bTest(15, 15, 23),
+	}
+	fmt.Println("Testing Nexts(n)")
+	for _, bTest := range bitsTests {
+		if ns, nl := Nexts(bTest.N); ns != bTest.expectedNextSmallest && nl != bTest.expectedNextLargest {
+			t.Fatalf("Nexts(%d) == (%d, %d), != expected values of (%d, %d)", bTest.N, ns, nl, bTest.expectedNextSmallest, bTest.expectedNextLargest)
+		}
+	}
+}
