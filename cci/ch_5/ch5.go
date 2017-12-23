@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"math"
 )
 
 func problemTitle(s string) string {
@@ -70,7 +71,7 @@ func Insert(N, M, i, j uint32) uint32 {
 func countOnes(n uint32) int {
 	count := 0
 	for n > 0 {
-		if (n & 1) == 0 {
+		if (n & 1) == 1 {
 			count += 1
 		}
 		n = n >> 1
@@ -86,7 +87,7 @@ func Nexts(n uint32) (uint32, uint32) {
 	if ones == 1 {
 		return n >> 1, n << 1
 	}
-	ns, nl := n, n
+	ns, nl := n-1, n+1
 	for ns > 0 && countOnes(ns) != ones {
 		ns -= 1
 	}
@@ -99,6 +100,14 @@ func Nexts(n uint32) (uint32, uint32) {
 //\\//\\ 5.4 //\\//\\
 func IsPowerOfTwo(n uint32) bool {
 	return (n & (n - 1)) == 0
+}
+
+//\\//\\ 5.5 //\\//\\
+func BitsToShift(n, m uint32) int {
+	nOnes := countOnes(n)
+	mOnes := countOnes(m)
+	// n to m
+	return int(math.Abs(float64(nOnes - mOnes)))
 }
 
 //\\//\\//\\ MAIN //\\//\\//\\
@@ -121,4 +130,5 @@ func main() {
 	// 100001 with 101 at 2-5 --> 110101 = 32+16+5 = 53
 	fmt.Println(Insert(33, 5, 2, 4) == 53)
 	fmt.Println(problemEndline(problemTitle("5.1")))
+	// All tests are now in ch5_test.go
 }

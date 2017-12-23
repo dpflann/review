@@ -79,8 +79,9 @@ func TestNexts(t *testing.T) {
 		bTest(3, 3, 5),
 		bTest(1, 1, 2),
 		bTest(2, 1, 4),
-		bTest(1<<31, 1<<31, 1<<30),
 		bTest(15, 15, 23),
+		bTest(1<<5, 1<<4, 1<<6),
+		bTest(33, 17, 34),
 	}
 	fmt.Println("Testing Nexts(n)")
 	for _, bTest := range bitsTests {
@@ -104,9 +105,30 @@ func TestIsPowerOfTwo(t *testing.T) {
 		powTwoTest{100, false},
 		powTwoTest{16, true},
 	}
+	fmt.Println("Testing IsPowerOfTwo(n)")
 	for _, pTtest := range pTtests {
 		if result := IsPowerOfTwo(pTtest.n); result != pTtest.is {
 			t.Fatalf("IsPowerOfTwo(%d) == %t, != %t", pTtest.n, result, pTtest.is)
+		}
+	}
+}
+
+//\\//\\ 5.5. //\\//\\
+func TestBitsShift(t *testing.T) {
+	type bShiftTest struct {
+		n        uint32
+		m        uint32
+		expected int
+	}
+	bShiftTests := []bShiftTest{
+		{0, 1, 1},
+		{1, 0, 1},
+		{31, 14, 2},
+	}
+	fmt.Println("Testing BitsToShift(n, m)")
+	for _, bst := range bShiftTests {
+		if result := BitsToShift(bst.n, bst.m); result != bst.expected {
+			t.Fatalf("BitsToShift(%d, %d) == %d, != %d", bst.n, bst.m, result, bst.expected)
 		}
 	}
 }
