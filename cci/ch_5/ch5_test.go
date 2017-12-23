@@ -138,3 +138,24 @@ func TestBitsShift(t *testing.T) {
 		}
 	}
 }
+
+//\\//\\ 5.6 //\\//\\
+func TestSwapEvenAndOddBits(t *testing.T) {
+	type swapTest struct {
+		n        uint32
+		expected uint32
+	}
+	swapTests := []swapTest{
+		{0xA, 0x5},
+		{0x0, 0x0},
+		{0x2, 0x1},
+		{0xAC, 0x5C},
+		{0xF, 0xF},
+	}
+	fmt.Println("Testing SwapEvenAndOddBits(n)")
+	for _, st := range swapTests {
+		if result := SwapEvenAndOddBits(st.n); result != st.expected {
+			t.Fatalf("SwapEvenAndOddBits(%d) == %d, != %d", st.n, result, st.expected)
+		}
+	}
+}

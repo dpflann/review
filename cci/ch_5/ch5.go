@@ -115,6 +115,12 @@ func BitsToShiftXOR(n, m uint32) int {
 	return countOnes(difference)
 }
 
+//\\//\\ 5.6 //\\//\\
+func SwapEvenAndOddBits(n uint32) uint32 {
+	var oddMask uint32 = 0xAAAAAAAA
+	return ((n&oddMask)>>1 | (n & ^oddMask)<<1)
+}
+
 //\\//\\//\\ MAIN //\\//\\//\\
 func main() {
 	fmt.Println(problemTitle("5.1"))
