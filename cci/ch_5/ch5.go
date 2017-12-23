@@ -110,6 +110,11 @@ func BitsToShift(n, m uint32) int {
 	return int(math.Abs(float64(nOnes - mOnes)))
 }
 
+func BitsToShiftXOR(n, m uint32) int {
+	difference := n ^ m
+	return countOnes(difference)
+}
+
 //\\//\\//\\ MAIN //\\//\\//\\
 func main() {
 	fmt.Println(problemTitle("5.1"))

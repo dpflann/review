@@ -131,4 +131,10 @@ func TestBitsShift(t *testing.T) {
 			t.Fatalf("BitsToShift(%d, %d) == %d, != %d", bst.n, bst.m, result, bst.expected)
 		}
 	}
+	fmt.Println("Testing BitsToShiftXOR(n, m)")
+	for _, bst := range bShiftTests {
+		if result := BitsToShiftXOR(bst.n, bst.m); result != bst.expected {
+			t.Fatalf("BitsToShift(%d, %d) == %d, != %d", bst.n, bst.m, result, bst.expected)
+		}
+	}
 }
