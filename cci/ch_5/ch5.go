@@ -121,6 +121,23 @@ func SwapEvenAndOddBits(n uint32) uint32 {
 	return ((n&oddMask)>>1 | (n & ^oddMask)<<1)
 }
 
+//\\//\\ 5.7 //\\//\\
+
+//\\//\\ 5.8 //\\//\\
+func DrawHorizontalLine(screen []byte, width, x1, x2, y int) []byte {
+	if x1 > (width-1) || x2 > (width-1) || (y > (len(screen) / width)) {
+		return screen
+	}
+	r := y * width
+	c1 := x1 + r
+	c2 := x2 + r
+	for i := range screen[c1 : c2+1] {
+		screen[c1+i] = 0xFF
+		i += 1
+	}
+	return screen
+}
+
 //\\//\\//\\ MAIN //\\//\\//\\
 func main() {
 	fmt.Println(problemTitle("5.1"))
