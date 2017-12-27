@@ -1,0 +1,53 @@
+6.1
+- Arrange all bottles and "label" each 1 to 20 (N).
+- For each bottle, take m pills where m is value of the "label".
+-- i.e. bottle 1 --> 1 pill; bottle 2 --> 2 pills; bottle 3 --> 3 pills...
+-- creating a sum of all pills; call this SS
+- If all bottles contain pills of 1.0 gram, we would expect the sum of the mass of all pills to be:
+-- 1 + 2 + 3 + 4 + ... + 20 (N), which is (N * (N + 1)) / 2; call this ES
+- Sum the mass of all pills from labeled containers, and subtract the expected sum (ES) from SS: SS - ES
+-- The difference will indicate which "labeled" bottle contains the 1.1 gram pills
+--- i.e. assume 5 bottles, assume bottle 3 has 1.1 gram pills; all others have 1.0g
+--- SS sum is 1 + 2 + 3.3 + 4 + 5 = 15.3
+--- ES sum is (5*6)/2 = 15
+--- SS = ES = .3, the third bottle contains the 1.1 gram pills
+
+6.2
+- An 8x8 checkered chess board with the first and last corner pieces removed cannot be covered by 2x1 tiles because
+- the 2 removed corner pieces are the same color leaving 32 - 2 = 30 white pieces, and 32 black pieces; and a tile covers
+- 1 black and 1 white piece due the checkering.
+-- e.g., assume 4x4 chess board:
+--- W B W B
+--- B W B W
+--- W B W B
+--- B W B W
+Remove top left and bottom right tiles:
+--- _ B W B
+--- B W B W
+--- W B W B
+--- B W B _
+- This can be proved by induction.
+
+6.3
+- Given one 3qt and one 5qt jug, to obtain 4qts one should:
+-- 1. fill the 3qt: 0/5, 3/3
+-- 2. pour the 3qt into the 5 qt: 3/5, 0/3
+-- 3. Fill the 3qt: 3/5, 3/3
+-- 4. Fill the 5qt with water from the 3qt: 5/5, 1/3
+-- 5. Empty 5qt: 0/5, 1/3
+-- 6. Fill the 5qt wiht the water from 3qt: 1/5, 0/3
+-- 7. Fill the 3qt: 1/5, 3/3
+-- 8. There are now 4qts: combine in the 5qt for easy carrying ;): 4/5, 0/3
+
+6.4
+- Naive: N days at most, each day 1 person goes to the rocket to be removed?
+
+6.5
+- Given 2 eggs and 100 floors, find N floor above which eggs break when dropped, below whcih eggs do not break when dropped
+- Start on the 0 floor; go up by 2 floors each time
+- Drop 1 egg; if the egg breaks, go down 1 floor; drop the 2nd egg; if broken, the previous floor, from which moved up 2 floors, is N. If not broken, then the current floor is N
+
+6.6
+- The 100 lockers being toggled corresponds to finding numbers that have odd number of factors and even number of factors.
+- Numbers with an odd number of factors will be open
+- Numbers with an even number of factors will be closed
