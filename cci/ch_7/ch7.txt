@@ -1,0 +1,45 @@
+// Implement Sieve of Eratosthenes
+
+7.1
+- Game 1: 1 shot
+- Game 2: 2/3 shots
+- When should you play G1 or G2?
+- P(make shot) = p
+- p = 3*p^2
+-- (1/x) = 3 * (1/x)^3
+-- 3 = x^2
+-- x = 3^(1/2)
+-- G1 and G2 are equal at p = 1/(3^(1/2))
+-- G1 > G2 when p < 1/(3^(1/2))
+-- G1 < G2 when p > 1/(3^(1/2))
+
+7.2
+- An ant has 2 directions to choose; it must choose one.
+- A collision occurs when any ant is not moving in the same direction as all the other ants
+- There are only 2 times when ants will not collide for all selections, there the probability of a collision is:
+-- P(collision) = 1 - (1/(2^(N-1)); where N is the number of ants
+
+7.3
+- Given 2 lines in the Cartesian plane, they will not interesct if they have the same slope and are hence parallel.
+- If the slopes are different they will eventually intersect.
+
+7.4
+- Implement {multiply, subtract, divide} using only add
+- Multiplication of n by m is adding n to itself m times
+- Subtract of m from n is adding the negative of m to n
+- Division of n by m is subtracting m from n as many times as possible
+
+7.5
+- Find the line that intersects and halves two squares in two-dimensional plane
+- Find the midpoints of each square, the line must pass through each midpoint, the slop then is
+-- m_line = (y2 - y1)/(x2 - x1)
+-- y = m*x + b; b = y - (m_line * x)
+
+7.6
+- To find the line that passes through the most points we should find N^2 lines, then find all points that fit and take the line with the maximum fits.
+
+7.7
+- Find Kth number such that the only prime factors are 3, 5, 7.
+- 3^a * 5^b * 7^c
+-- find a, b, and c where a, b, c > 1
+
