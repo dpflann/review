@@ -20,13 +20,13 @@ Resource: https://portal.influxdata.com/downloads (select stable version of Infl
 4. Ensure InfluxDB is running and that you have its hostname, port, and databasename.
 - if installed, you can just run quickly using defaults: `> influxd`
 5. Run the service:
--- You can use the binary to load raptor data into InfluxDB using the following flags:
+- You can use the binary to load raptor data into InfluxDB using the following flags:
 
 |Flag|Type|Description|
 |----|----|-----------|
 |-raptors|String|The name of the CSV with raptor data.|
 
--- You can use the binary to run the temporal querying service by using the following flags:
+- You can use the binary to run the temporal querying service by using the following flags:
 
 |Flag|Type|Description|
 |----|----|-----------|
