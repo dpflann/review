@@ -18,8 +18,7 @@ Resource: https://portal.influxdata.com/downloads (select stable version of Infl
 ### Running the Service
 3. Build the service using the `build.sh` or use `go build` or `go install`
 4. Ensure InfluxDB is running and that you have its hostname, port, and databasename.
--- if install, you can just run quickly using defaults:
--- `> influxd`
+- if installed, you can just run quickly using defaults: `> influxd`
 5. Run the service:
 -- You can use the binary to load raptor data into InfluxDB using the following flags:
 
