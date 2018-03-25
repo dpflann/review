@@ -7,12 +7,14 @@ safe travels for human time-travelers.
 ## Setup 
 0. Ensure go is installed. If not, follow the steps provided here: https://golang.org/doc/install
 1. Ensure the main.go has been extracted and is in a location in your GOPATH
--- Check your Go environment settings by: `go env`
+- Check your Go environment settings by: `go env`
 2. Install InfluxDB
--- Resource: https://portal.influxdata.com/downloads (select stable version of InfluxDB to see options)
--- On OSX: After install `homebrew`, run `brew update && brew install influxdb`
--- Docker: `docker pull influxdb`
--- Ubuntu & Debian: `wget https://dl.influxdata.com/influxdb/releases/influxdb_1.5.1_amd64.deb && sudo dpkg -i influxdb_1.5.1_amd64.deb`
+
+Resource: https://portal.influxdata.com/downloads (select stable version of InfluxDB to see options)
+- On OSX: After install `homebrew`, run `brew update && brew install influxdb`
+- Docker: `docker pull influxdb`
+- Ubuntu & Debian: `wget https://dl.influxdata.com/influxdb/releases/influxdb_1.5.1_amd64.deb && sudo dpkg -i influxdb_1.5.1_amd64.deb`
+
 ### Running the Service
 3. Build the service using the `build.sh` or use `go build` or `go install`
 4. Ensure InfluxDB is running and that you have its hostname, port, and databasename.
@@ -20,6 +22,7 @@ safe travels for human time-travelers.
 -- `> influxd`
 5. Run the service:
 -- You can use the binary to load raptor data into InfluxDB using the following flags:
+|Flag|Type|Description|
 |----|----|-----------|
 |-raptors|String|The name of the CSV with raptor data.|
 
@@ -40,8 +43,11 @@ You can load and serve simply by combining flags. For example, if you've named y
 ## Querying
 ### Request
 URL: /raptors
+
 Method: GET
+
 Parameters: `time=YYYY-MM-DD`
+
 ### Response
 Body:
 ```json
@@ -62,10 +68,13 @@ curl -XGET "localhost:9091/raptors?time=2000-01-01"
 ## Updating
 ### Request
 URL: /raptors
+
 Method: GET
+
 Parameters:
 - `time=YYYY-MM-DD`
 - `contained=XX` where XX is a positive integer
+
 ### Response
 Body:
 ```json
